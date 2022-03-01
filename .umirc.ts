@@ -9,23 +9,25 @@ export default defineConfig({
   mode: 'site',
   extraBabelPlugins: [
     [
-      'babel-plugin-import',
+      'import',
       {
         libraryName: 'antd',
         libraryDirectory: 'es',
-        style: true,
+        style: 'css',
       },
     ],
   ],
-  apiParser: {
-    // 自定义属性过滤配置，也可以是一个函数，用法参考：https://github.com/styleguidist/react-docgen-typescript/#propfilter
-    propFilter: {
-      // 是否忽略从 node_modules 继承的属性，默认值为 false
-      skipNodeModules: true,
-    },
-  },
+  // apiParser: {
+  //   // 自定义属性过滤配置，也可以是一个函数，用法参考：https://github.com/styleguidist/react-docgen-typescript/#propfilter
+  //   propFilter: {
+  //     // 是否忽略从 node_modules 继承的属性，默认值为 false
+  //     skipNodeModules: true,
+  //   },
+  // },
+  mfsu: {},
+  webpack5: {},
+  dynamicImport: {},
   base: '/comp-antd/',
-  // publicPath: '/comp-antd/docs-dist/',
   publicPath: process.env.NODE_ENV === 'production' ? '/comp-antd/' : '/',
   // history: {
   //   type: 'hash', // 设置路由模式为 hash 模式，防止部署至 GitHub Pages 后刷新网页后出现 404 的情况发生.

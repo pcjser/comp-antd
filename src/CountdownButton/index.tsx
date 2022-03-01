@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { ButtonProps } from 'antd/es/button';
 
+import './index.less';
+
 const MAX_SECOND_NUM = 60;
 
 interface CountdownButtonType extends Omit<ButtonProps, 'disabled' | 'onClick'> {
@@ -75,6 +77,7 @@ function CountdownButton({
 
   return (
     <Button
+      className="demo-1"
       disabled={authCodeArgs.timing}
       style={{ minWidth: 100, ...(rest.style || {}) }}
       onClick={() => {
