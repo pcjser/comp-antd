@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Select, SelectProps } from 'antd';
 
 interface MapSelectProps extends Omit<SelectProps, 'loading'> {
-  data?: { label: string; value: string | number }[] | undefined;
-  unique?: string | undefined;
-  showLabel?: string | string[] | number[] | undefined;
+  data?: Array<{ label: string; value: string }>;
+  showLabel?: string | string[];
+  unique?: string;
   separator?: string;
-  fetch?: () => Promise<{ label: string; value: string | number }[]> | undefined;
+  fetch?: () => Promise<Array<{ label: string; value: string }>>;
 }
 
 const MapSelect = ({
+  separator = ',',
+  placeholder = '请选择',
   data,
   unique,
   showLabel,
-  separator = ',',
   fetch,
-  placeholder = '请选择',
   onChange,
   ...rest
 }: MapSelectProps) => {
-  const [dataMap, setDataMap] = useState<{ label: string; value: string | number }[] | undefined>();
+  const [dataMap, setDataMap] = useState<Array<{ label: string; value: string }>>();
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -36,8 +36,8 @@ const MapSelect = ({
   }, [data, fetch]);
 
   const renderText = (
-    data: { label: string; value: string | number }[],
-    showLabel: Array<string | number> | string,
+    data: Array<{ label: string; value: string }>,
+    showLabel: Array<string> | string,
   ) => {
     if (typeof showLabel === 'string')
       return data.filter(({ value }) => value === showLabel)[0]?.value;
