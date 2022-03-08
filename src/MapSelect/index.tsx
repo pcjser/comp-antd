@@ -40,7 +40,7 @@ const MapSelect = ({
     showLabel: Array<string> | string,
   ) => {
     if (typeof showLabel === 'string')
-      return data.filter(({ value }) => value === showLabel)[0]?.value;
+      return data.filter(({ value }) => value === showLabel)[0]?.label;
     if (Array.isArray(showLabel))
       return data
         .filter(({ value }) => showLabel.includes(value))
