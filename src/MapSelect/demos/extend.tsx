@@ -4,19 +4,19 @@ import { Space } from 'antd';
 
 const DATA = [
   {
-    label: 'Jack',
+    label: 'Jack-Label',
     value: 'Jack',
   },
   {
-    label: 'Lucy',
+    label: 'Lucy-Label',
     value: 'Lucy',
   },
   {
-    label: 'Rose',
+    label: 'Rose-Label',
     value: 'Rose',
   },
   {
-    label: 'Windy',
+    label: 'Windy-Label',
     value: 'Windy',
   },
 ];
@@ -33,7 +33,7 @@ export default () => (
     />
     <MapSelect
       data={DATA}
-      style={{ width: 200 }}
+      style={{ width: 300 }}
       onChange={console.log}
       mode="multiple"
       placeholder="multiple"
@@ -46,13 +46,6 @@ export default () => (
       mode="multiple"
       placeholder="maxTagCount"
       maxTagCount={2}
-    />
-    <MapSelect
-      data={[]}
-      style={{ width: 200 }}
-      onChange={console.log}
-      placeholder="tags"
-      mode="tags"
     />
   </Space>
 );

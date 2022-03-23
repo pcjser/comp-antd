@@ -4,7 +4,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import localeCN from 'antd/es/date-picker/locale/zh_CN';
 
-interface DateRangePickerProps
+export interface DateRangeProps
   extends Omit<DatePickerProps, 'format' | 'value' | 'onChange' | 'defaultValue'> {
   format?:
     | 'YYYY'
@@ -14,6 +14,7 @@ interface DateRangePickerProps
     | 'YYYY-MM-DD HH:mm'
     | 'YYYY-MM-DD HH:mm:ss';
   value?: Array<string>;
+  defaultValue?: Array<string>;
   onChange?: (range: Array<string>) => void;
   asc?: boolean;
   strict?: boolean;
@@ -43,7 +44,7 @@ const formatToShowTime = (format: string) =>
       }
     : false;
 
-const DateRangePicker = ({
+const DateRange: React.FC<DateRangeProps> = ({
   format = 'YYYY-MM-DD',
   locale = localeCN,
   onChange = () => {},
@@ -51,7 +52,7 @@ const DateRangePicker = ({
   strict = false,
   asc = true,
   value,
-}: DateRangePickerProps) => {
+}) => {
   const [picker, setPicker] = useState<'date' | 'year' | 'month'>('date');
   const [begin, setBegin] = useState<moment.Moment | null>(null);
   const [end, setEnd] = useState<moment.Moment | null>(null);
@@ -85,6 +86,7 @@ const DateRangePicker = ({
         placeholder="请选择开始时间"
         disabled={disabled}
         format={format}
+        bordered={false}
       />
       <span style={{ margin: '0 5px' }}>-</span>
       <DatePicker
@@ -104,4 +106,4 @@ const DateRangePicker = ({
   );
 };
 
-export default DateRangePicker;
+export default DateRange;

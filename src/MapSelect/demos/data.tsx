@@ -4,36 +4,36 @@ import { Space } from 'antd';
 
 const DATA1 = [
   {
-    label: 'Jack',
+    label: 'Jack-Label',
     value: 'Jack',
   },
   {
-    label: 'Lucy',
+    label: 'Lucy-Label',
     value: 'Lucy',
   },
   {
-    label: 'Rose',
+    label: 'Rose-Label',
     value: 'Rose',
   },
   {
-    label: 'Windy',
+    label: 'Windy-Label',
     value: 'Windy',
   },
 ];
 
 const DATA2 = [
   {
-    label: 'Disabled',
+    label: 'Disabled-Label',
     value: 'Disabled',
     disabled: true,
   },
   {
-    label: 'ClassName',
+    label: 'ClassName-Label',
     value: 'ClassName',
     className: 'my-option',
   },
   {
-    label: 'Base',
+    label: 'Base-Label',
     value: 'Base',
   },
 ];

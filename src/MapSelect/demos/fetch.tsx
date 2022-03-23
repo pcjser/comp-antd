@@ -6,19 +6,19 @@ const api = () =>
     setTimeout(() => {
       resolve([
         {
-          label: 'Jack',
+          label: 'Jack-Label',
           value: 'Jack',
         },
         {
-          label: 'Lucy',
-          value: 'Lucy',
+          label: 'Lucy-Label',
+          value: 'Lucy-Label',
         },
         {
-          label: 'Rose',
+          label: 'Rose-Label',
           value: 'Rose',
         },
         {
-          label: 'Windy',
+          label: 'Windy-Label',
           value: 'Windy',
         },
       ]);

@@ -1,5 +1,5 @@
 ---
-title: DateRangePicker 时间范围选择器
+title: DateRange 时间范围选择器
 nav:
   title: 组件
   path: /components
@@ -7,7 +7,7 @@ group:
   path: /components
 ---
 
-# DateRangePicker 时间范围选择器
+# DateRange 时间范围选择器
 
 时间选择器用于时间范围选择和单个时间选择
 

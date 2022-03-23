@@ -1,37 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Select, SelectProps } from 'antd';
 
-interface MapSelectProps extends Omit<SelectProps, 'loading'> {
+export interface MapSelectProps extends Omit<SelectProps, 'loading' | 'mode'> {
   data?: Array<{ label: string; value: string }>;
   showLabel?: string | string[];
   unique?: string;
   separator?: string;
+  mode?: 'multiple' | 'default';
   fetch?: () => Promise<Array<{ label: string; value: string }>>;
 }
 
-const MapSelect = ({
+const MapSelect: React.FC<MapSelectProps> = ({
   separator = ',',
   placeholder = '请选择',
+  mode = 'default',
   data,
   unique,
   showLabel,
   fetch,
   onChange,
   ...rest
-}: MapSelectProps) => {
+}) => {
   const [dataMap, setDataMap] = useState<Array<{ label: string; value: string }>>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  const newMode = mode === 'multiple' ? 'multiple' : undefined;
+
   useEffect(() => {
     if (!fetch || data) return;
-    if (unique && window.sessionStorage[`map-select-${unique}`])
+    if (unique && window?.sessionStorage && window.sessionStorage[`map-select-${unique}`])
       return setDataMap(JSON.parse(window.sessionStorage[`map-select-${unique}`]));
     (async () => {
       setLoading(true);
       const result = await fetch();
       setDataMap(result);
       setLoading(false);
-      if (unique) window.sessionStorage[`map-select-${unique}`] = JSON.stringify(result);
+      if (unique && window?.sessionStorage)
+        window.sessionStorage[`map-select-${unique}`] = JSON.stringify(result);
     })();
   }, [data, fetch]);
 
@@ -41,7 +46,7 @@ const MapSelect = ({
   ) => {
     if (typeof showLabel === 'string')
       return data.filter(({ value }) => value === showLabel)[0]?.label;
-    if (Array.isArray(showLabel))
+    if (Array.isArray(showLabel) && mode === 'multiple')
       return data
         .filter(({ value }) => showLabel.includes(value))
         ?.map(({ label }) => label)
@@ -55,7 +60,13 @@ const MapSelect = ({
           {renderText(data || dataMap || [], showLabel)}
         </div>
       ) : (
-        <Select onChange={onChange} placeholder={placeholder} loading={loading} {...rest}>
+        <Select
+          onChange={onChange}
+          placeholder={placeholder}
+          loading={loading}
+          mode={newMode}
+          {...rest}
+        >
           {(data || dataMap)?.map(({ label, value, ...rest }) => (
             <Select.Option key={value} value={value} {...rest}>
               {label}
@@ -66,5 +77,7 @@ const MapSelect = ({
     </>
   );
 };
+
+MapSelect.displayName = 'MapSelect';
 
 export default MapSelect;
