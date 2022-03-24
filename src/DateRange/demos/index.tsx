@@ -4,8 +4,8 @@ import { Space } from 'antd';
 
 export default () => (
   <Space>
-    <DateRange format="YYYY-MM-DD" onChange={console.log} style={{ width: 400 }} />
-    <DateRange format="YYYY-MM-DD" onChange={console.log} />
-    <DateRange format="YYYY-MM-DD HH:mm:ss" onChange={console.log} />
+    <DateRange style={{ width: 400 }} onChange={console.log} />
+    {/* <DateRange onChange={console.log} /> */}
+    {/* <DateRange format="YYYY-MM-DD HH:mm:ss" onChange={console.log} /> */}
   </Space>
 );

@@ -1,13 +1,32 @@
 .date-range-picker {
   min-width: 160px;
-}
 
-.date-range-start-pop {
-  left: -13px !important;
-  top: 30px !important;
-}
+  .picker-clear {
+    position: absolute;
+    top: 50%;
+    right: 11px;
+    color: #fff;
+    line-height: 1;
+    background: #fff;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s, color 0.3s;
+  }
 
-.date-range-end-pop {
-  left: -13px !important;
-  top: 30px !important;
+  &:hover {
+    .picker-clear {
+      color: #00000040;
+    }
+  }
+
+  .date-range-start-pop {
+    top: 30px !important;
+    left: -13px !important;
+  }
+
+  .date-range-end-pop {
+    top: 30px !important;
+    left: -13px !important;
+  }
 }
