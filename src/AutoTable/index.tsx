@@ -1,6 +1,11 @@
-import React, { useState, Children, cloneElement } from 'react';
+import React, { Children, cloneElement, useEffect, useState } from 'react';
 import { Layout, message } from 'antd';
+// import { Table, Space, Button, Popconfirm, TableProps } from 'antd';
+// import { ColumnProps, ColumnsType } from 'antd/lib/table';
 // import { useAsyncEffect } from 'ahooks';
+
+import { AutoTableProps, TablePanelProps } from './interface';
+
 // import ConditionSearchPanel from './ConditionSearchPanel';
 // import AdvancedSearchPanel from './AdvancedSearchPanel';
 // import OperationPanel from './OperationPanel';
@@ -16,45 +21,35 @@ import TablePanel from './TablePanel';
 //     return null;
 // };
 
-interface AutoTableProps {
-  rowkey?: string;
-  children?: React.ReactNode;
-}
-
 const AutoTable = ({
+  tableFetchAfter = (data) => data,
+  rowKey = 'id',
   children,
-  //  apiMap = {},
-  rowkey = 'id',
-  ...rest
-}: AutoTableProps) => {
-  // const [pagination] = useState(
-  //     children.some((item) => item.key === 'pagination')
-  // );
+  tableFetch,
+}: //  apiMap = {},
+// ...rest
+AutoTableProps) => {
+  // const [pagination] = useState(children?.some((item) => item?.key === 'pagination'));
   // const [initialCondition] = useState(
-  //     children.filter((item) => item.key === 'condition')[0]?.props
-  //         ?.initialValues
+  //   children?.filter((item) => item.key === 'condition')[0]?.props?.initialValues,
   // );
-  // const [search, setSearch] = useState(
-  //     pagination
-  //         ? { pageSize: 10, current: 1, ...initialCondition }
-  //         : { ...initialCondition }
-  // );
-  // const [tableData, setTableData] = useState({});
+  const [search, setSearch] = useState<object>(
+    // pagination ? { pageSize: 10, current: 1, ...initialCondition } : { ...initialCondition },
+    {},
+  );
+  const [dataSource, setDataSource] = useState<Array<object>>([]);
   // const [operate, setOperate] = useState(null); // 用户触发新增/修改
   // const [record, setRecord] = useState(null); // 当前记录
   // const [selectedRows, setSelectedRows] = useState([]);
   // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  // useAsyncEffect(async () => {
-  //     const data = await apiMap.table(
-  //         apiMap.tableFetchBefore
-  //             ? apiMap.tableFetchBefore({ ...search })
-  //             : search
-  //     );
-  //     setTableData(
-  //         apiMap.tableFetchAfter ? apiMap.tableFetchAfter(data) : data
-  //     );
-  // }, [search]);
+  useEffect(() => {
+    if (tableFetch)
+      (async () => {
+        const data = await tableFetch(search);
+        setDataSource(tableFetchAfter(data));
+      })();
+  }, [search]);
 
   // const onClose = () => {
   //     setOperate(null);
@@ -132,11 +127,11 @@ const AutoTable = ({
       {Children.map(children, (child) => {
         return child
           ? cloneElement(child as React.ReactElement, {
-              rowkey,
+              rowKey,
               // search,
               // apiMap,
               // setSearch,
-              // tableData,
+              dataSource,
               // operate,
               // record,
               // pagination,
@@ -152,7 +147,7 @@ const AutoTable = ({
               // submitUpdate,
               // onDelete,
               // onRetrieve,
-              ...rest,
+              // ...rest,
             })
           : null;
       })}
@@ -169,7 +164,8 @@ const AutoTable = ({
 // ProTable.OperationPanel = (props) => (
 //     <OperationPanel key="operation" {...props} />
 // );
-AutoTable.TablePanel = (props: object) => <TablePanel key="table" {...props} />;
+
+AutoTable.TablePanel = (props: TablePanelProps) => <TablePanel key="table" {...props} />;
 // ProTable.PaginationPanel = (props) => (
 //     <PaginationPanel key="pagination" {...props} />
 // );

@@ -1,23 +1,21 @@
-import React from 'react';
-import { Table, Space, Button, Popconfirm, TableProps } from 'antd';
+import React, { FC } from 'react';
+import { Table, Space, Button, Popconfirm } from 'antd';
 
-interface TablePanelProps extends Omit<TableProps<Record<string, any>>, ''> {
-  serial?: boolean;
-}
+import { TablePanelProps } from './interface';
 
-const TablePanel = ({
+const TablePanel: FC<TablePanelProps> = ({
   serial = true,
-  size = 'middle',
-  scroll = {
-    // y: window.innerHeight - 402,
-    x: 'max-content',
-  },
-  columns = [],
+  columns,
+  // size = 'middle',
+  // scroll = {
+  //   // y: window.innerHeight - 402,
+  //   x: 'max-content',
+  // },
   // actions = [],
   // actionExtends = [],
-  // rowkey,
+  rowKey,
   // selection,
-  // tableData,
+  dataSource,
   // selectedRowKeys,
   // setSelectedRowKeys,
   // setSelectedRows,
@@ -28,7 +26,7 @@ const TablePanel = ({
   // setSearch,
   // pagination,
   ...rest
-}: TablePanelProps) => {
+}) => {
   // const actionAassemble = (record) => {
   //   return (
   //     <Space size={0}>
@@ -113,13 +111,13 @@ const TablePanel = ({
       //     onChange: handleSelectChange,
       //   }
       // }
-      // rowKey={(item) => item[rowKey]}
+      rowKey={rowKey}
       columns={columns}
-      // dataSource={tableData?.data}
+      dataSource={dataSource}
       // loading={!Boolean(tableData?.data)}
       pagination={false}
       // size={size}
-      scroll={scroll}
+      // scroll={scroll}
       {...rest}
     />
   );

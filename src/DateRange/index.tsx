@@ -1,24 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { DatePicker, DatePickerProps } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { DatePicker } from 'antd';
+import classNames from 'classnames';
+import { SwapRightOutlined, CloseCircleOutlined, CalendarOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import localeCN from 'antd/es/date-picker/locale/zh_CN';
 
-export interface DateRangeProps
-  extends Omit<DatePickerProps, 'format' | 'value' | 'onChange' | 'defaultValue'> {
-  format?:
-    | 'YYYY'
-    | 'YYYY-MM'
-    | 'YYYY-MM-DD'
-    | 'YYYY-MM-DD HH'
-    | 'YYYY-MM-DD HH:mm'
-    | 'YYYY-MM-DD HH:mm:ss';
-  value?: Array<string>;
-  defaultValue?: Array<string>;
-  onChange?: (range: Array<string>) => void;
-  asc?: boolean;
-  strict?: boolean;
-}
+import { DateRangeProps } from './interface';
+
+import './index.less';
 
 const formatToPicker = (format: string) => {
   switch (format) {
@@ -31,11 +21,11 @@ const formatToPicker = (format: string) => {
   }
 };
 
-const sortDateArray = (array: Array<moment.Moment | null>, format: string, asc: boolean) => {
-  const list = array.map((item) => (item ? item.format(format) : ''));
-  if (!asc) return list;
-  return list.sort((a: string, b: string) => Date.parse(a) - Date.parse(b));
-};
+// const sortDateArray = (array: Array<moment.Moment | null>, format: string, asc: boolean) => {
+//   const list = array.map((item) => (item ? item.format(format) : ''));
+//   if (!asc) return list;
+//   return list.sort((a: string, b: string) => Date.parse(a) - Date.parse(b));
+// };
 
 const formatToShowTime = (format: string) =>
   format.split(' ')[1]
@@ -52,32 +42,61 @@ const DateRange: React.FC<DateRangeProps> = ({
   strict = false,
   asc = true,
   value,
+  className,
+  style,
 }) => {
+  const pickerRef = useRef(null);
   const [picker, setPicker] = useState<'date' | 'year' | 'month'>('date');
   const [begin, setBegin] = useState<moment.Moment | null>(null);
   const [end, setEnd] = useState<moment.Moment | null>(null);
   const [showTime, setShowTime] = useState<object | boolean>(false);
+  const [focus, setFocus] = useState<boolean>(false);
+  const [barOffsetLeft, setBarOffsetLeft] = useState<number>(0);
+  const [pickerWidth, setPickerWidth] = useState<number>(0);
 
   useEffect(() => {
+    // const pickerWidth = ;
+    setPickerWidth(parseInt(window?.getComputedStyle(pickerRef.current!)?.['width']));
+    // console.log(pickerWidth);
+
     setPicker(formatToPicker(format));
     setShowTime(formatToShowTime(format));
     if (value?.[0]) setBegin(moment(value?.[0]));
     if (value?.[1]) setEnd(moment(value?.[1]));
   }, []);
 
+  const classes = classNames(
+    // 处理classname
+    'date-range-picker',
+    'ant-picker',
+    'ant-picker-range',
+    {
+      ['ant-picker-focused']: focus,
+    },
+    className,
+  );
+
   const handleBeginChange = (begin: moment.Moment | null) => {
     setBegin(begin);
-    onChange(sortDateArray([begin, end], format, asc));
+    // onChange(sortDateArray([begin, end], format, asc));
   };
 
   const handleEndChange = (end: moment.Moment | null) => {
     setEnd(end);
-    onChange(sortDateArray([begin, end], format, asc));
+    // onChange(sortDateArray([begin, end], format, asc));
   };
 
   return (
-    <div>
+    <div
+      className={classes}
+      onFocus={() => setFocus(true)}
+      onBlur={() => setFocus(false)}
+      style={style}
+      ref={pickerRef}
+    >
       <DatePicker
+        allowClear={false}
+        style={{ padding: 0, flex: 1 }}
         showTime={showTime}
         locale={locale}
         picker={picker}
@@ -87,9 +106,19 @@ const DateRange: React.FC<DateRangeProps> = ({
         disabled={disabled}
         format={format}
         bordered={false}
+        suffixIcon={null}
+        dropdownClassName="date-range-start-pop"
+        getPopupContainer={(trigger) => trigger}
+        onFocus={() => {
+          setBarOffsetLeft(0);
+        }}
       />
-      <span style={{ margin: '0 5px' }}>-</span>
+      <div className="ant-picker-range-separator">
+        <SwapRightOutlined />
+      </div>
       <DatePicker
+        allowClear={false}
+        style={{ padding: 0, flex: 1 }}
         showTime={showTime}
         locale={locale}
         picker={picker}
@@ -98,10 +127,21 @@ const DateRange: React.FC<DateRangeProps> = ({
         placeholder="请选择结束时间"
         disabled={strict ? !begin || disabled : disabled}
         format={format}
+        bordered={false}
         disabledDate={(current) =>
           strict ? current.valueOf() - (begin as moment.Moment).valueOf() < 0 : false
         }
+        suffixIcon={null}
+        dropdownClassName="date-range-end-pop"
+        getPopupContainer={(trigger) => trigger}
+        onFocus={() => setBarOffsetLeft(32 + (pickerWidth - 76) / 2)}
       />
+      <div
+        className="ant-picker-active-bar"
+        style={{ width: (pickerWidth - 76) / 2, position: 'absolute', left: barOffsetLeft }}
+      />
+      <CalendarOutlined className="ant-picker-suffix" />
+      <CloseCircleOutlined className="ant-picker-clear" />
     </div>
   );
 };

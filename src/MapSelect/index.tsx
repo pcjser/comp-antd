@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Select, SelectProps } from 'antd';
+import { Select } from 'antd';
 
-export interface MapSelectProps extends Omit<SelectProps, 'loading' | 'mode'> {
-  data?: Array<{ label: string; value: string }>;
-  showLabel?: string | string[];
-  unique?: string;
-  separator?: string;
-  mode?: 'multiple' | 'default';
-  fetch?: () => Promise<Array<{ label: string; value: string }>>;
-}
+import { MapSelectProps } from './interface';
 
 const MapSelect: React.FC<MapSelectProps> = ({
   separator = ',',
