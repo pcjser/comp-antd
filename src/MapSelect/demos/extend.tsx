@@ -24,7 +24,7 @@ const DATA = [
 export default () => (
   <Space>
     <MapSelect
-      data={DATA}
+      dataSource={DATA}
       style={{ width: 200 }}
       onChange={console.log}
       placeholder="defaultValue"
@@ -32,7 +32,7 @@ export default () => (
       allowClear
     />
     <MapSelect
-      data={DATA}
+      dataSource={DATA}
       style={{ width: 300 }}
       onChange={console.log}
       mode="multiple"
@@ -40,7 +40,7 @@ export default () => (
       defaultValue={['Lucy', 'Jack']}
     />
     <MapSelect
-      data={DATA}
+      dataSource={DATA}
       style={{ width: 200 }}
       onChange={console.log}
       mode="multiple"

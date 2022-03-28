@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapSelect } from 'comp-antd';
 
-const api = () =>
+const getData = () =>
   new Promise<{ label: string; value: string }[]>((resolve) => {
     setTimeout(() => {
       resolve([
@@ -26,5 +26,10 @@ const api = () =>
   });
 
 export default () => (
-  <MapSelect style={{ width: 200 }} unique="unique-demo" onChange={console.log} fetch={api} />
+  <MapSelect
+    style={{ width: 200 }}
+    unique="unique-demo"
+    onChange={console.log}
+    dataSource={getData()}
+  />
 );

@@ -40,9 +40,9 @@ const DATA2 = [
 
 export default () => (
   <Space>
-    <MapSelect data={DATA1} style={{ width: 200 }} />
-    <MapSelect data={DATA2} style={{ width: 200 }} onChange={console.log} />
-    <MapSelect data={DATA1} style={{ width: 200 }} disabled />
-    <MapSelect data={DATA1} style={{ width: 200 }} onChange={console.log} allowClear />
+    <MapSelect dataSource={DATA1} style={{ width: 200 }} />
+    <MapSelect dataSource={DATA2} style={{ width: 200 }} onChange={console.log} />
+    <MapSelect dataSource={DATA1} style={{ width: 200 }} disabled />
+    <MapSelect dataSource={DATA1} style={{ width: 200 }} onChange={console.log} allowClear />
   </Space>
 );

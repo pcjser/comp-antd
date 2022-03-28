@@ -23,9 +23,9 @@ const DATA = [
 
 export default () => (
   <Space>
-    <MapSelect data={DATA} style={{ width: 200 }} showLabel="Rose" />
+    <MapSelect dataSource={DATA} style={{ width: 200 }} showLabel="Rose" />
     <MapSelect
-      data={DATA}
+      dataSource={DATA}
       style={{ width: 200 }}
       mode="multiple"
       showLabel={['Jack', 'Windy']}

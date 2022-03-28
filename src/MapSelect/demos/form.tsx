@@ -27,7 +27,7 @@ export default () => {
   return (
     <Form form={form}>
       <Form.Item name="uname" label="姓名">
-        <MapSelect data={DATA} style={{ width: 200 }} />
+        <MapSelect dataSource={DATA} style={{ width: 200 }} />
       </Form.Item>
       <Space>
         <Button

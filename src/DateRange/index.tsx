@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { DatePicker } from 'antd';
 import classNames from 'classnames';
 import { SwapRightOutlined, CloseCircleFilled, CalendarOutlined } from '@ant-design/icons';
@@ -53,9 +53,9 @@ const pickerToFormat = (picker: string, separator: string) => {
 
 const DateRange: React.FC<DateRangeProps> = ({
   locale = localeCN,
-  picker = 'second',
+  picker = 'date',
   separator = '-',
-  onChange = () => {},
+  onChange = () => null,
   value,
   defaultValue,
   disabled,
@@ -63,21 +63,25 @@ const DateRange: React.FC<DateRangeProps> = ({
   style,
 }) => {
   const pickerRef = useRef(null);
-  const beginRef = useRef(null);
-  const endRef = useRef(null);
   const clearRef = useRef(null);
 
   const [focus, setFocus] = useState<boolean>(false);
   const [barOffsetLeft, setBarOffsetLeft] = useState<number>(0);
-  const [lock, setLock] = useState<boolean>(false);
   const [begin, setBegin] = useState<moment.Moment | null>(
     value || defaultValue ? moment((value || defaultValue)?.[0]) : null,
   );
-  const [beginOpen, setBeginOpen] = useState<boolean>(false);
   const [end, setEnd] = useState<moment.Moment | null>(
     value || defaultValue ? moment((value || defaultValue)?.[1]) : null,
   );
-  const [endOpen, setEndOpen] = useState<boolean>(false);
+  const [time, setTime] = useState<NodeJS.Timeout>();
+
+  useMemo(() => {
+    if (!begin || !end) return onChange(undefined);
+    return onChange([
+      begin?.format(pickerToFormat(picker, separator)) as string,
+      end?.format(pickerToFormat(picker, separator)) as string,
+    ]);
+  }, [begin, end]);
 
   const classes = classNames(
     // 处理classname
@@ -90,92 +94,63 @@ const DateRange: React.FC<DateRangeProps> = ({
     className,
   );
 
-  const getPickerWidth = () =>
-    pickerRef.current ? parseInt(window?.getComputedStyle(pickerRef.current!)?.['width']) : 0;
+  const getPickerWidth = () => (pickerRef.current ? (pickerRef.current as any).offsetWidth : 0);
 
   const handleBeginChange = (begin: moment.Moment | null) => {
     setBegin(begin);
-    setBeginOpen(false);
-
-    if (!lock) {
-      setLock(true);
-      (endRef.current as unknown as HTMLInputElement)?.focus();
+    if (!end) {
       setBarOffsetLeft(32 + (getPickerWidth() - 76) / 2);
-      setEndOpen(true);
-    } else {
-      setLock(false);
-      onChange([
-        begin?.format(pickerToFormat(picker, separator)) as string,
-        end?.format(pickerToFormat(picker, separator)) as string,
-      ]);
     }
   };
 
   const handleEndChange = (end: moment.Moment | null) => {
     setEnd(end);
-    setEndOpen(false);
-
-    if (!lock) {
-      setLock(true);
-      (beginRef.current as unknown as HTMLInputElement)?.focus();
+    if (!begin) {
       setBarOffsetLeft(0);
-      setBeginOpen(true);
-    } else {
-      setLock(false);
-      onChange([
-        begin?.format(pickerToFormat(picker, separator)) as string,
-        end?.format(pickerToFormat(picker, separator)) as string,
-      ]);
     }
   };
 
-  const handleBeginClick = () => {
-    setLock(false);
-    setBarOffsetLeft(0);
-    setBeginOpen(true);
-    setEndOpen(false);
-  };
-
-  const handleEndClick = () => {
-    setLock(false);
-    setBarOffsetLeft(32 + (getPickerWidth() - 76) / 2);
-    setBeginOpen(false);
-    setEndOpen(true);
-  };
-
   const handleClear = () => {
-    // console.log(focus);
-    // e.stopPropagation();
+    (clearRef.current as any).style.opacity = '0';
     setBegin(null);
     setEnd(null);
-    onChange(undefined);
+  };
 
-    // console.log(
-    //   window.getComputedStyle(pickerRef.current.querySelector('.ant-picker-active-bar'))['bottom'],
-    // );
+  const handlePickerFocus = () => {
+    if (!focus) setFocus(true);
+    if (time) {
+      clearTimeout(time);
+      setTime(undefined);
+    }
+  };
 
-    // endRef.current as unknown as HTMLInputElement)?.isFocus()
+  const handlePickerBlur = () => {
+    if (time) {
+      clearTimeout(time);
+      setTime(undefined);
+    }
 
-    // console.log(endRef.current, document.activeElement);
-    // if (focus) {
-    //   if (barOffsetLeft >= 32 + (getPickerWidth() - 76) / 2)
-    //     (endRef.current as unknown as HTMLInputElement)?.focus();
-    //   else (beginRef.current as unknown as HTMLInputElement)?.focus();
-    // } else {
-    // }
+    setTime(
+      setTimeout(() => {
+        setFocus(false);
+        if (!begin || !end) {
+          handleClear();
+        }
+      }, 100),
+    );
   };
 
   return (
     <div
       className={classes}
-      onFocus={() => setFocus(true)}
-      onBlur={() => setFocus(false)}
+      onFocus={handlePickerFocus}
+      onBlur={handlePickerBlur}
       onMouseEnter={(e) => {
         if (e.target === pickerRef.current && end && begin)
-          (clearRef.current as unknown as HTMLInputElement).style.opacity = '1';
+          (clearRef.current as any).style.opacity = '1';
       }}
       onMouseLeave={() => {
-        (clearRef.current as unknown as HTMLInputElement).style.opacity = '0';
+        (clearRef.current as any).style.opacity = '0';
       }}
       style={style}
       ref={pickerRef}
@@ -187,14 +162,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         suffixIcon={null}
         dropdownClassName="date-range-start-pop"
         getPopupContainer={(trigger) => trigger}
-        onClick={handleBeginClick}
-        onBlur={() => {
-          setBeginOpen(false);
-          if (!begin) {
-            setEnd(null);
-            onChange(undefined);
-          }
-        }}
+        onFocus={() => setBarOffsetLeft(0)}
         placeholder="开始时间"
         locale={locale}
         disabled={disabled}
@@ -203,9 +171,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         value={begin}
         onChange={handleBeginChange}
         onOk={handleBeginChange}
-        open={beginOpen}
         format={pickerToFormat(picker, separator)}
-        ref={beginRef}
         disabledDate={(current) => current?.valueOf() > (end as moment.Moment)?.valueOf()}
       />
       <div className="ant-picker-range-separator">
@@ -218,14 +184,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         suffixIcon={null}
         dropdownClassName="date-range-end-pop"
         getPopupContainer={(trigger) => trigger}
-        onClick={handleEndClick}
-        onBlur={() => {
-          setEndOpen(false);
-          if (!end) {
-            setBegin(null);
-            onChange(undefined);
-          }
-        }}
+        onFocus={() => setBarOffsetLeft(32 + (getPickerWidth() - 76) / 2)}
         placeholder="结束时间"
         locale={locale}
         disabled={disabled}
@@ -234,8 +193,6 @@ const DateRange: React.FC<DateRangeProps> = ({
         value={end}
         onChange={handleEndChange}
         onOk={handleEndChange}
-        open={endOpen}
-        ref={endRef}
         format={pickerToFormat(picker, separator)}
         disabledDate={(current) => current?.valueOf() < (begin as moment.Moment)?.valueOf()}
       />
@@ -247,8 +204,6 @@ const DateRange: React.FC<DateRangeProps> = ({
       <CloseCircleFilled
         className="picker-clear"
         ref={clearRef}
-        onFocusCapture={() => console.log(focus)}
-        onClickCapture={() => console.log(focus)}
         onFocus={(e) => e.stopPropagation()}
         onClick={handleClear}
       />
