@@ -1,12 +1,13 @@
-import React, { Children, cloneElement, useEffect, useState } from 'react';
+import React, { Children, cloneElement, FC, useState, ReactElement } from 'react';
 import { Layout, message } from 'antd';
 // import { Table, Space, Button, Popconfirm, TableProps } from 'antd';
 // import { ColumnProps, ColumnsType } from 'antd/lib/table';
 // import { useAsyncEffect } from 'ahooks';
 
-import { AutoTableProps, TablePanelProps } from './interface';
+import { AutoTableProps } from './interface';
+import useTable, { AutoTableInstance } from './hooks/useTable';
 
-// import ConditionSearchPanel from './ConditionSearchPanel';
+import SearchPanel from './SearchPanel';
 // import AdvancedSearchPanel from './AdvancedSearchPanel';
 // import OperationPanel from './OperationPanel';
 import TablePanel from './TablePanel';
@@ -21,139 +22,142 @@ import TablePanel from './TablePanel';
 //     return null;
 // };
 
-const AutoTable = ({
-  tableFetchAfter = (data) => data,
-  rowKey = 'id',
+const InternalTable = ({
+  // tableFetchAfter = (data) => data,
+  // rowKey = 'id',
+  table,
   children,
-  tableFetch,
-}: //  apiMap = {},
-// ...rest
-AutoTableProps) => {
-  // const [pagination] = useState(children?.some((item) => item?.key === 'pagination'));
-  // const [initialCondition] = useState(
-  //   children?.filter((item) => item.key === 'condition')[0]?.props?.initialValues,
-  // );
-  const [search, setSearch] = useState<object>(
-    // pagination ? { pageSize: 10, current: 1, ...initialCondition } : { ...initialCondition },
-    {},
-  );
-  const [dataSource, setDataSource] = useState<Array<object>>([]);
-  // const [operate, setOperate] = useState(null); // 用户触发新增/修改
-  // const [record, setRecord] = useState(null); // 当前记录
-  // const [selectedRows, setSelectedRows] = useState([]);
-  // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+}: AutoTableProps) =>
+  // ref,
+  {
+    // const [wrapTable] = useTable(table);
 
-  useEffect(() => {
-    if (tableFetch)
-      (async () => {
-        const data = await tableFetch(search);
-        setDataSource(tableFetchAfter(data));
-      })();
-  }, [search]);
+    // React.useImperativeHandle(ref, () => wrapTable);
+    // const [pagination] = useState(children?.some((item) => item?.key === 'pagination'));
+    // const [initialCondition] = useState(
+    //   children?.filter((item) => item.key === 'condition')[0]?.props?.initialValues,
+    // // );
+    // const [search, setSearch] = useState<object>(
+    //   // pagination ? { pageSize: 10, current: 1, ...initialCondition } : { ...initialCondition },
+    //   {},
+    // );
+    // const [dataSource, setDataSource] = useState<Array<object>>([]);
+    // const [operate, setOperate] = useState(null); // 用户触发新增/修改
+    // const [record, setRecord] = useState(null); // 当前记录
+    // const [selectedRows, setSelectedRows] = useState([]);
+    // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  // const onClose = () => {
-  //     setOperate(null);
-  // };
+    // useEffect(() => {
+    //   if (tableFetch)
+    //     (async () => {
+    //       const data = await tableFetch(search);
+    //       setDataSource(tableFetchAfter(data));
+    //     })();
+    // }, [search]);
 
-  // const onCreate = () => {
-  //     setOperate('create');
-  // };
+    // const onClose = () => {
+    //     setOperate(null);
+    // };
 
-  // const submitCreate = async (values) => {
-  //     await apiMap.create(
-  //         apiMap.createFetchBefore
-  //             ? apiMap.createFetchBefore({ ...values })
-  //             : values
-  //     );
-  //     message.success('创建成功');
-  //     setSearch(pagination ? { ...search, current: 1 } : { ...search });
-  //     onClose();
-  // };
+    // const onCreate = () => {
+    //     setOperate('create');
+    // };
 
-  // const onDelete = async (_record) => {
-  //     let params = {};
-  //     params[rowKey] = _record[rowKey];
-  //     await apiMap.delete(
-  //         apiMap.deleteFetchBefore
-  //             ? apiMap.deleteFetchBefore({ ...params })
-  //             : params
-  //     );
-  //     message.success('删除成功');
-  //     setSearch(pagination ? { ...search, current: 1 } : { ...search });
-  // };
+    // const submitCreate = async (values) => {
+    //     await apiMap.create(
+    //         apiMap.createFetchBefore
+    //             ? apiMap.createFetchBefore({ ...values })
+    //             : values
+    //     );
+    //     message.success('创建成功');
+    //     setSearch(pagination ? { ...search, current: 1 } : { ...search });
+    //     onClose();
+    // };
 
-  // const onRetrieve = async (_record) => {
-  //     let params = {};
-  //     params[rowKey] = _record[rowKey];
-  //     let data = await apiMap.retrieve(
-  //         apiMap.retrieveFetchBefore
-  //             ? apiMap.retrieveFetchBefore({ ...params })
-  //             : params
-  //     );
-  //     if (apiMap.retrieveFetchAfter) data = apiMap.retrieveFetchAfter(data);
-  //     setRecord({ ..._record, ...data });
-  //     setOperate('retrieve');
-  // };
+    // const onDelete = async (_record) => {
+    //     let params = {};
+    //     params[rowKey] = _record[rowKey];
+    //     await apiMap.delete(
+    //         apiMap.deleteFetchBefore
+    //             ? apiMap.deleteFetchBefore({ ...params })
+    //             : params
+    //     );
+    //     message.success('删除成功');
+    //     setSearch(pagination ? { ...search, current: 1 } : { ...search });
+    // };
 
-  // const onUpdate = async (_record) => {
-  //     const params = {};
-  //     params[rowKey] = _record[rowKey];
-  //     let data = await apiMap.retrieve(
-  //         apiMap.retrieveFetchBefore
-  //             ? apiMap.retrieveFetchBefore({ ...params })
-  //             : params
-  //     );
-  //     if (apiMap.retrieveFetchAfter) data = apiMap.retrieveFetchAfter(data);
-  //     setRecord({ ..._record, ...data });
-  //     setOperate('update');
-  // };
+    // const onRetrieve = async (_record) => {
+    //     let params = {};
+    //     params[rowKey] = _record[rowKey];
+    //     let data = await apiMap.retrieve(
+    //         apiMap.retrieveFetchBefore
+    //             ? apiMap.retrieveFetchBefore({ ...params })
+    //             : params
+    //     );
+    //     if (apiMap.retrieveFetchAfter) data = apiMap.retrieveFetchAfter(data);
+    //     setRecord({ ..._record, ...data });
+    //     setOperate('retrieve');
+    // };
 
-  // const submitUpdate = async (values) => {
-  //     const params = {};
-  //     params[rowKey] = record[rowKey];
-  //     let data = { ...params, ...values };
-  //     await apiMap.update(
-  //         apiMap.updateFetchBefore
-  //             ? apiMap.updateFetchBefore({ ...data })
-  //             : data
-  //     );
-  //     message.success('更新成功');
-  //     setSearch({ ...search });
-  //     onClose();
-  // };
+    // const onUpdate = async (_record) => {
+    //     const params = {};
+    //     params[rowKey] = _record[rowKey];
+    //     let data = await apiMap.retrieve(
+    //         apiMap.retrieveFetchBefore
+    //             ? apiMap.retrieveFetchBefore({ ...params })
+    //             : params
+    //     );
+    //     if (apiMap.retrieveFetchAfter) data = apiMap.retrieveFetchAfter(data);
+    //     setRecord({ ..._record, ...data });
+    //     setOperate('update');
+    // };
 
-  return (
-    <div>
-      {Children.map(children, (child) => {
-        return child
-          ? cloneElement(child as React.ReactElement, {
-              rowKey,
-              // search,
-              // apiMap,
-              // setSearch,
-              dataSource,
-              // operate,
-              // record,
-              // pagination,
-              // setOperate,
-              // selectedRows,
-              // setSelectedRows,
-              // selectedRowKeys,
-              // setSelectedRowKeys,
-              // onClose,
-              // onCreate,
-              // submitCreate,
-              // onUpdate,
-              // submitUpdate,
-              // onDelete,
-              // onRetrieve,
-              // ...rest,
-            })
-          : null;
-      })}
-    </div>
-  );
-};
+    // const submitUpdate = async (values) => {
+    //     const params = {};
+    //     params[rowKey] = record[rowKey];
+    //     let data = { ...params, ...values };
+    //     await apiMap.update(
+    //         apiMap.updateFetchBefore
+    //             ? apiMap.updateFetchBefore({ ...data })
+    //             : data
+    //     );
+    //     message.success('更新成功');
+    //     setSearch({ ...search });
+    //     onClose();
+    // };
+
+    return (
+      <div>
+        {Children.map(children, (child) => {
+          return child
+            ? cloneElement(child as ReactElement, {
+                // rowKey,
+                // search,
+                // apiMap,
+                // setSearch,
+                // dataSource,
+                // operate,
+                // record,
+                // pagination,
+                // setOperate,
+                // selectedRows,
+                // setSelectedRows,
+                // selectedRowKeys,
+                // setSelectedRowKeys,
+                // onClose,
+                // onCreate,
+                // submitCreate,
+                // onUpdate,
+                // submitUpdate,
+                // onDelete,
+                // onRetrieve,
+                // ...rest,
+              })
+            : null;
+        })}
+      </div>
+    );
+  };
 
 // ProTable.ConditionSearchPanel = (props) => (
 //     <ConditionSearchPanel key="condition" {...props} />
@@ -165,7 +169,7 @@ AutoTableProps) => {
 //     <OperationPanel key="operation" {...props} />
 // );
 
-AutoTable.TablePanel = (props: TablePanelProps) => <TablePanel key="table" {...props} />;
+// AutoTable.TablePanel = (props: TablePanelProps) => <TablePanel key="table" {...props} />;
 // ProTable.PaginationPanel = (props) => (
 //     <PaginationPanel key="pagination" {...props} />
 // );
@@ -175,4 +179,15 @@ AutoTable.TablePanel = (props: TablePanelProps) => <TablePanel key="table" {...p
 //     <ExtensionPanel key="extension" {...props} />
 // );
 
-export default AutoTable;
+// const AutoTable = React.forwardRef<AutoTableInstance, AutoTableProps>(InternalTable) as (
+//   props: React.PropsWithChildren<AutoTableProps> & { ref?: React.Ref<AutoTableInstance> },
+// ) => React.ReactElement;
+
+// AutoTable.SearchPanel = SearchPanel;
+// AutoTable.TablePanel = TablePanel;
+
+InternalTable.useTable = useTable;
+
+InternalTable.displayName = 'AutoTable';
+
+export default InternalTable;

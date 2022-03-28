@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Table, Space, Button, Popconfirm } from 'antd';
 
 import { TablePanelProps } from './interface';
 
 const TablePanel: FC<TablePanelProps> = ({
-  serial = true,
   columns,
+  serial = true,
   // size = 'middle',
   // scroll = {
   //   // y: window.innerHeight - 402,
@@ -27,6 +27,23 @@ const TablePanel: FC<TablePanelProps> = ({
   // pagination,
   ...rest
 }) => {
+  const [data, setData] = useState<Array<object>>([]);
+
+  useEffect(() => {
+    if (serial) columns?.unshift({ title: '序号', render: (_, __, index) => index + 1 });
+
+    (async () => {
+      // setLoading(true);
+      const result = await dataSource;
+
+      setData(result);
+      // setDataMap(result);
+      // setLoading(false);
+      // if (unique && window?.sessionStorage)
+      //   window.sessionStorage[`map-select-${unique}`] = JSON.stringify(result);
+    })();
+  }, []);
+
   // const actionAassemble = (record) => {
   //   return (
   //     <Space size={0}>
@@ -83,15 +100,6 @@ const TablePanel: FC<TablePanelProps> = ({
   //   setSelectedRowKeys(keys);
   // };
 
-  // if (serial)
-  //   columns = [
-  //     {
-  //       title: '序号',
-  //       width: 60,
-  //       render: (_, record, index) => index + 1,
-  //     },
-  //     ...columns,
-  //   ];
   // if (actions?.length > 0 || actionExtends.length > 0)
   //   columns = [
   //     ...columns,
@@ -113,7 +121,7 @@ const TablePanel: FC<TablePanelProps> = ({
       // }
       rowKey={rowKey}
       columns={columns}
-      dataSource={dataSource}
+      dataSource={data}
       // loading={!Boolean(tableData?.data)}
       pagination={false}
       // size={size}
@@ -122,5 +130,7 @@ const TablePanel: FC<TablePanelProps> = ({
     />
   );
 };
+
+TablePanel.displayName = 'TablePanel';
 
 export default TablePanel;

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, FC, useEffect } from 'react';
 import { DatePicker } from 'antd';
 import classNames from 'classnames';
 import { SwapRightOutlined, CloseCircleFilled, CalendarOutlined } from '@ant-design/icons';
@@ -51,14 +51,15 @@ const pickerToFormat = (picker: string, separator: string) => {
   }
 };
 
-const DateRange: React.FC<DateRangeProps> = ({
+const DateRange: FC<DateRangeProps> = ({
   locale = localeCN,
   picker = 'date',
   separator = '-',
-  onChange = () => null,
+  disabled = false,
+  onChange,
   value,
   defaultValue,
-  disabled,
+  placeholder,
   className,
   style,
 }) => {
@@ -68,19 +69,24 @@ const DateRange: React.FC<DateRangeProps> = ({
   const [focus, setFocus] = useState<boolean>(false);
   const [barOffsetLeft, setBarOffsetLeft] = useState<number>(0);
   const [begin, setBegin] = useState<moment.Moment | null>(
-    value || defaultValue ? moment((value || defaultValue)?.[0]) : null,
+    defaultValue ? moment(defaultValue?.[0]) : null,
   );
   const [end, setEnd] = useState<moment.Moment | null>(
-    value || defaultValue ? moment((value || defaultValue)?.[1]) : null,
+    defaultValue ? moment(defaultValue?.[1]) : null,
   );
   const [time, setTime] = useState<NodeJS.Timeout>();
 
-  useMemo(() => {
-    if (!begin || !end) return onChange(undefined);
-    return onChange([
-      begin?.format(pickerToFormat(picker, separator)) as string,
-      end?.format(pickerToFormat(picker, separator)) as string,
-    ]);
+  useEffect(() => {
+    if (value) setBegin(moment(value?.[0]));
+    if (value) setEnd(moment(value?.[1]));
+  }, [value]);
+
+  const result = useMemo(() => {
+    if (!begin || !end) return undefined;
+    return [
+      begin.format(pickerToFormat(picker, separator)) as string,
+      end.format(pickerToFormat(picker, separator)) as string,
+    ];
   }, [begin, end]);
 
   const classes = classNames(
@@ -90,6 +96,7 @@ const DateRange: React.FC<DateRangeProps> = ({
     'ant-picker-range',
     {
       ['ant-picker-focused']: focus,
+      ['ant-picker-disabled']: disabled,
     },
     className,
   );
@@ -111,7 +118,7 @@ const DateRange: React.FC<DateRangeProps> = ({
   };
 
   const handleClear = () => {
-    (clearRef.current as any).style.opacity = '0';
+    if (clearRef.current) (clearRef.current as any).style.opacity = '0';
     setBegin(null);
     setEnd(null);
   };
@@ -136,6 +143,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         if (!begin || !end) {
           handleClear();
         }
+        onChange && onChange(result);
       }, 100),
     );
   };
@@ -146,11 +154,11 @@ const DateRange: React.FC<DateRangeProps> = ({
       onFocus={handlePickerFocus}
       onBlur={handlePickerBlur}
       onMouseEnter={(e) => {
-        if (e.target === pickerRef.current && end && begin)
+        if (e.target === pickerRef.current && clearRef.current)
           (clearRef.current as any).style.opacity = '1';
       }}
       onMouseLeave={() => {
-        (clearRef.current as any).style.opacity = '0';
+        if (clearRef.current) (clearRef.current as any).style.opacity = '0';
       }}
       style={style}
       ref={pickerRef}
@@ -163,7 +171,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         dropdownClassName="date-range-start-pop"
         getPopupContainer={(trigger) => trigger}
         onFocus={() => setBarOffsetLeft(0)}
-        placeholder="开始时间"
+        placeholder={placeholder?.[0] || '开始时间'}
         locale={locale}
         disabled={disabled}
         picker={getPickerType(picker)}
@@ -185,7 +193,7 @@ const DateRange: React.FC<DateRangeProps> = ({
         dropdownClassName="date-range-end-pop"
         getPopupContainer={(trigger) => trigger}
         onFocus={() => setBarOffsetLeft(32 + (getPickerWidth() - 76) / 2)}
-        placeholder="结束时间"
+        placeholder={placeholder?.[1] || '结束时间'}
         locale={locale}
         disabled={disabled}
         picker={getPickerType(picker)}
@@ -201,12 +209,14 @@ const DateRange: React.FC<DateRangeProps> = ({
         style={{ width: (getPickerWidth() - 76) / 2, position: 'absolute', left: barOffsetLeft }}
       />
       <CalendarOutlined className="ant-picker-suffix" />
-      <CloseCircleFilled
-        className="picker-clear"
-        ref={clearRef}
-        onFocus={(e) => e.stopPropagation()}
-        onClick={handleClear}
-      />
+      {begin && end && (
+        <CloseCircleFilled
+          className="picker-clear"
+          ref={clearRef}
+          onFocus={(e) => e.stopPropagation()}
+          onClick={handleClear}
+        />
+      )}
     </div>
   );
 };

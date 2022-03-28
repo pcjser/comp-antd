@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { Select } from 'antd';
 import { isArray, isPromise, isString } from '@/util/dataTypes';
 
@@ -6,7 +6,7 @@ import { MapSelectProps } from './interface';
 
 import 'antd/es/select/style/index';
 
-const MapSelect: React.FC<MapSelectProps> = ({
+const MapSelect: FC<MapSelectProps> = ({
   separator = ',',
   placeholder = '请选择',
   mode = 'default',

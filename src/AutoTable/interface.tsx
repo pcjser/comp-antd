@@ -1,16 +1,23 @@
-import { TableProps } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import { ReactNode } from 'react';
+import { TableProps } from 'antd/es/table';
+import { AutoTableInstance } from './hooks/useTable';
 
 export interface AutoTableProps {
-  rowKey?: string;
-  children?: Array<React.ReactChild> | React.ReactChild;
-  tableFetch?: (search: object) => Promise<Array<object>>;
-  tableFetchAfter?: (result: Array<object>) => Array<object>;
+  table?: AutoTableInstance;
+  // rowKey?: string;
+  children?: ReactNode;
+  // tableFetch?: (search: object) => Promise<Array<object>>;
+  // tableFetchAfter?: (result: Array<object>) => Array<object>;
 }
 
-export interface TablePanelProps extends Omit<TableProps<Record<string, any>>, 'pagination'> {
+export interface TablePanelProps
+  extends Omit<TableProps<Record<string, any>>, 'pagination' | 'dataSource'> {
+  dataSource: Promise<Array<object>>;
   serial?: boolean;
-  // columns?: ColumnsType<Record<string, any>>;
   actions?: Array<object>;
-  rowKey?: string;
+}
+
+export interface SearchPanelProps {
+  conditions: Array<{ name: string; label: string; icol?: number; component: ReactNode }>;
+  col?: number;
 }
