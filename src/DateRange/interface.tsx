@@ -1,8 +1,10 @@
 import { CSSProperties } from 'react';
 import { PickerLocale } from 'antd/es/date-picker/generatePicker';
 
+type pickerType = 'year' | 'month' | 'date' | 'hour' | 'minute' | 'second';
+
 export interface DateRangeProps {
-  picker?: 'year' | 'month' | 'date' | 'hour' | 'minute' | 'second';
+  picker?: pickerType;
   separator?: '-' | '/';
   value?: Array<string>;
   defaultValue?: Array<string>;

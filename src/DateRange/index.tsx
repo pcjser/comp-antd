@@ -8,7 +8,7 @@ import localeCN from 'antd/es/date-picker/locale/zh_CN';
 
 import { DateRangeProps } from './interface';
 
-import 'antd/es/date-picker/style/index';
+// import 'antd/es/date-picker/style/index';
 import './index.less';
 
 const getPickerType = (picker: string) => {

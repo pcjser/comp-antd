@@ -1,10 +1,10 @@
 import React, { useState, useEffect, FC } from 'react';
 import { Select } from 'antd';
-import { isArray, isPromise, isString } from '@/util/dataTypes';
+import { isArray, isPromise, isString } from '../util/dataTypes';
 
-import { MapSelectProps } from './interface';
+import { dataItem, MapSelectProps } from './interface';
 
-import 'antd/es/select/style/index';
+// import 'antd/es/select/style/index';
 
 const MapSelect: FC<MapSelectProps> = ({
   separator = ',',
@@ -16,12 +16,12 @@ const MapSelect: FC<MapSelectProps> = ({
   onChange,
   ...rest
 }) => {
-  const [dataMap, setDataMap] = useState<Array<{ label: string; value: string }>>();
+  const [dataMap, setDataMap] = useState<Array<dataItem>>();
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!dataSource) return console.error('MapSelect组件缺少dataSource参数');
-    if (isArray(dataSource)) setDataMap(dataSource as Array<{ label: string; value: string }>);
+    if (isArray(dataSource)) setDataMap(dataSource as Array<dataItem>);
     else if (isPromise(dataSource)) {
       if (unique && window?.sessionStorage[`map-select-${unique}`])
         return setDataMap(JSON.parse(window.sessionStorage[`map-select-${unique}`]));
@@ -36,10 +36,7 @@ const MapSelect: FC<MapSelectProps> = ({
     } else console.error('MapSelect组件错误的dataSource参数');
   }, [dataSource]);
 
-  const renderText = (
-    data: Array<{ label: string; value: string }> | undefined,
-    showLabel: Array<string> | string,
-  ) => {
+  const renderText = (data: Array<dataItem> | undefined, showLabel: Array<string> | string) => {
     if (isString(showLabel) || mode === 'default')
       return data?.filter(({ value }) => value === showLabel)[0]?.label;
     if (isArray(showLabel) && mode === 'multiple')
