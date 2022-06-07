@@ -4,47 +4,56 @@ import { AutoTableInstance, InternalHooks } from './interface';
 import { setValues } from '../util/value';
 
 export class AutoTableStore {
-  private forceRootUpdate: () => void;
+  // private store: Store = {};
 
-  private store: Store = {};
-
-  private dataSource: Store = {};
+  // private dataSource = [
+  //   {
+  //     id: 1,
+  //     name: '测试',
+  //   },
+  // ];
 
   constructor(forceRootUpdate: () => void) {
     this.forceRootUpdate = forceRootUpdate;
   }
 
-  public getAutoTable = (): AutoTableInstance => ({
-    initialTable: this.initialTable,
-    // getDataSource: this.getAutoTable,
+  private tableList = [];
+  private showModal = false;
+  private record = null;
+
+  private forceRootUpdate: () => void;
+
+  public getAutoTableInstance = (): AutoTableInstance => ({
     getInternalHooks: this.getInternalHooks,
   });
 
-  private setDataSource = async () => {
-    console.log('setDataSource');
-    const data = await Promise.resolve([
-      {
-        id: 1,
-        name: '10',
-      },
-    ]);
-    this.dataSource = data;
-    console.log(this.dataSource);
+  public setTableList = (data) => {
+    this.tableList = data;
+    this.forceRootUpdate();
   };
 
-  public initialTable = () => {
-    console.log('initialTable');
-    // this.store = await this.getData();
-    // console.log(this.store);
-    this.setDataSource();
+  public getTableList = () => {
+    return this.tableList;
   };
 
-  public getDataSource = () => {
-    return this.dataSource;
+  public getModalStatus = () => this.showModal;
+
+  public setModalStatus = (tag) => {
+    this.showModal = tag;
+    this.forceRootUpdate();
   };
+
+  public handleRetrieve = (record) => {
+    console.log(record);
+    this.record = record;
+    this.showModal = true;
+    // this.forceRootUpdate();
+  };
+
+  public getRecord = () => this.record;
 
   private getInternalHooks: InternalHooks = () => {
-    console.log(77777);
+    // console.log(77777);
     // if (key === HOOK_MARK) {
     //   this.formHooked = true;
 
@@ -58,10 +67,13 @@ export class AutoTableStore {
       // setValidateMessages: this.setValidateMessages,
       // getFields: this.getFields,
       // setPreserve: this.setPreserve,
-      // getInitialValue: this.getInitialValue,
-      // initialTable: this.initialTable,
-      getDataSource: this.getDataSource,
-      setDataSource: this.setDataSource,
+      record: this.record,
+      showModal: this.showModal,
+      handleRetrieve: this.handleRetrieve,
+      getTableList: this.getTableList,
+      setTableList: this.setTableList,
+      getModalStatus: this.getModalStatus,
+      setModalStatus: this.setModalStatus,
     };
     // }
 
@@ -78,6 +90,8 @@ function useAutoTable<Values = any>(
   const autoTableRef = React.useRef<AutoTableInstance>();
   const [, forceUpdate] = React.useState({});
 
+  console.log('update');
+
   if (!autoTableRef.current) {
     if (table) {
       autoTableRef.current = table;
@@ -88,7 +102,7 @@ function useAutoTable<Values = any>(
 
       const autoTableStore: AutoTableStore = new AutoTableStore(forceReRender);
 
-      autoTableRef.current = autoTableStore.getAutoTable();
+      autoTableRef.current = autoTableStore.getAutoTableInstance();
     }
   }
 

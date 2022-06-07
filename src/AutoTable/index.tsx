@@ -1,6 +1,9 @@
 import React from 'react';
 import { AutoTableInstance, AutoTableProps } from './interface';
 import AutoTable from './AutoTable';
+import TablePanel from './TablePanel';
+import ModalPanel from './ModalPanel';
+
 import useAutoTable from './useAutoTable';
 
 // const AutoTable = () => (
@@ -22,6 +25,9 @@ interface RefAutoTableType extends InternalAutoTableType {
 }
 
 const RefAutoTable: RefAutoTableType = InternalAutoTable as RefAutoTableType;
+
+RefAutoTable.TablePanel = TablePanel;
+RefAutoTable.ModalPanel = ModalPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;
 

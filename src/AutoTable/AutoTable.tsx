@@ -1,33 +1,34 @@
 import * as React from 'react';
 import { AutoTableInstance, AutoTableProps } from './interface';
 import useAutoTable from './useAutoTable';
-// import type { AutoTableContextProps } from './AutoTableContext';
 import AutoTableContext from './AutoTableContext';
 
 const AutoTable: React.ForwardRefRenderFunction<AutoTableInstance, AutoTableProps> = (
   { table, children },
   ref,
 ) => {
-  // const autoTableContext: AutoTableContextProps = React.useContext(AutoTableContext);
-
   const [autoTableInstance] = useAutoTable(table);
 
-  const { getDataSource } = (autoTableInstance as AutoTableInstance).getInternalHooks();
+  // const { getDataSource } = (autoTableInstance as AutoTableInstance).getInternalHooks();
 
-  console.log(getDataSource());
+  // console.log(getDataSource());
 
-  React.useImperativeHandle(ref, () => autoTableInstance);
+  // React.useImperativeHandle(ref, () => autoTableInstance);
+
+  console.log(7777);
 
   React.useEffect(() => {
     // initialTable();
-    //   // const name = 'demo';
-    //   // autoTableContext.registerAutoTable(name, autoTableInstance);
-    //   // return () => {
-    //   //   autoTableContext.unregisterAutoTable(name);
-    //   // };
+    // const name = 'demo';
+    // autoTableContext.registerAutoTable(name, autoTableInstance);
+    // return () => {
+    //   autoTableContext.unregisterAutoTable(name);
+    // };
   }, []);
 
-  return <div>{JSON.stringify(getDataSource())}</div>;
+  return (
+    <AutoTableContext.Provider value={autoTableInstance}>{children}</AutoTableContext.Provider>
+  );
 };
 
 export default AutoTable;

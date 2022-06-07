@@ -1,28 +1,76 @@
 import * as React from 'react';
 import { AutoTable } from 'comp-antd';
-// import { Input } from 'antd';
+import { Input, Form } from 'antd';
+
+const getData = () =>
+  new Promise<Array<object>>((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 10,
+          name: 'demo',
+        },
+        {
+          id: 20,
+          name: 'HEHEH',
+        },
+      ]);
+    }, 500);
+  });
+
+const columns = [
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '年龄',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: '住址',
+    dataIndex: 'address',
+    key: 'address',
+  },
+];
+
+const actions = [
+  {
+    value: 'retrieve',
+    label: '查看',
+  },
+];
+
+const formItems = (
+  <>
+    <Form.Item name="name" label="姓名">
+      <Input />
+    </Form.Item>
+  </>
+);
 
 export default () => {
   const [table] = AutoTable.useAutoTable();
 
-  React.useEffect(() => {
-    table.initialTable();
-  }, []);
+  // React.useEffect(() => {
+  //   // table.initialTable();
+  // }, []);
 
-  return <AutoTable table={table}></AutoTable>;
+  return (
+    <AutoTable table={table}>
+      <AutoTable.TablePanel
+        rowKey="id"
+        serial
+        actions={actions}
+        columns={columns}
+        dataSource={getData}
+      />
+      <AutoTable.ModalPanel formItems={formItems} />
+    </AutoTable>
+  );
 };
-
-// // const getData = () =>
-// //   new Promise<Array<object>>((resolve) => {
-// //     setTimeout(() => {
-// //       resolve([
-// //         {
-// //           id: 10,
-// //           name: 'demo',
-// //         },
-// //       ]);
-// //     }, 500);
-// //   });
 
 // // export default () => {
 // //   // const conditions = [

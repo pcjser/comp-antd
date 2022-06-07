@@ -17,7 +17,7 @@ export interface InternalHooks {
 }
 
 export interface AutoTableInstance<Values = any> {
-  initialTable: () => void;
+  // initialTable: () => void;
   getInternalHooks: () => InternalHooks;
   // getDataSource: () => Array<any>;
 }
