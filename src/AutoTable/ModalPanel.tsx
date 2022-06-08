@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Input, Button, Popconfirm, Form } from 'antd';
-import useAutoTable from './useAutoTable';
-import { AutoTableInstance, AutoTableProps } from './interface';
+import { Form, Modal } from 'antd';
+import React, { useEffect } from 'react';
 
-import type { AutoTableContextProps } from './AutoTableContext';
 import AutoTableContext from './AutoTableContext';
 
 const ModalPanel = ({ formItems }) => {
@@ -16,9 +13,9 @@ const ModalPanel = ({ formItems }) => {
 
   // console.log(autoTableInstance);
 
-  const { setModalStatus, showModal, record } = autoTableContext.getInternalHooks();
+  // const { setModalStatus, showModal, record } = autoTableContext.getInternalHooks();
 
-  console.log(showModal);
+  // console.log(showModal);
   // const actionAassemble = (record) => {
   //   return (
   //     <Space>
@@ -95,12 +92,14 @@ const ModalPanel = ({ formItems }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue(record);
-  }, [record]);
+    console.log('ModalPanel');
+
+    // form.setFieldsValue(record);
+  }, []);
 
   return (
     <>
-      <Modal visible={showModal} onCancel={() => setModalStatus(false)}>
+      <Modal visible={false}>
         <Form form={form}>{formItems}</Form>
       </Modal>
       {/* <div onClick={() => setModalStatus(true)}>6666</div> */}

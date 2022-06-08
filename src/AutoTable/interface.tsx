@@ -37,7 +37,7 @@ export interface AutoTableProps<Values = any> {
 //   actions?: Array<object>;
 // }
 
-// export interface SearchPanelProps {
-//   conditions: Array<{ name: string; label: string; icol?: number; component: ReactNode }>;
-//   col?: number;
-// }
+export interface ConditionPanelProps {
+  conditions: Array<{ name: string; label: string; icol?: number; component: React.ReactNode }>;
+  col?: number;
+}

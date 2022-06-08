@@ -1,9 +1,10 @@
-import * as React from 'react';
+import { Form, Input } from 'antd';
 import { AutoTable } from 'comp-antd';
-import { Input, Form } from 'antd';
+import * as React from 'react';
 
-const getData = () =>
+const getData = (params) =>
   new Promise<Array<object>>((resolve) => {
+    console.log(params);
     setTimeout(() => {
       resolve([
         {
@@ -13,6 +14,10 @@ const getData = () =>
         {
           id: 20,
           name: 'HEHEH',
+        },
+        {
+          id: 30,
+          name: params.date,
         },
       ]);
     }, 500);
@@ -51,24 +56,55 @@ const formItems = (
   </>
 );
 
+const conditions = [
+  {
+    name: 'date',
+    label: '案件归档时间',
+    component: <Input />,
+    // icol: 12,
+    // onComponent: props => (
+    //     <ProDatePicker.DateRange
+    //         options={[
+    //             { label: "日", value: "date" },
+    //             { label: "月", value: "month" },
+    //             { label: "年", value: "year" }
+    //         ]}
+    //         {...props}
+    //     />
+    // )
+  },
+];
+
 export default () => {
   const [table] = AutoTable.useAutoTable();
 
-  // React.useEffect(() => {
-  //   // table.initialTable();
-  // }, []);
+  // console.log(table);
+
+  const [initialCondition, setInitialCondition] = React.useState({ date: 'test' });
+
+  React.useEffect(() => {
+    // table.refreshTable();
+
+    setTimeout(() => {
+      setInitialCondition({ date: 'yyyyy' });
+    }, 2000);
+  }, []);
 
   return (
-    <AutoTable table={table}>
-      <AutoTable.TablePanel
-        rowKey="id"
-        serial
-        actions={actions}
-        columns={columns}
-        dataSource={getData}
-      />
-      <AutoTable.ModalPanel formItems={formItems} />
-    </AutoTable>
+    <>
+      <AutoTable table={table}>
+        <AutoTable.ConditionPanel initialCondition={initialCondition} conditions={conditions} />
+        <AutoTable.TablePanel
+          rowKey="id"
+          serial
+          actions={actions}
+          columns={columns}
+          dataSource={getData}
+        />
+        {/* <AutoTable.ModalPanel formItems={formItems} /> */}
+      </AutoTable>
+      <div onClick={() => table.refreshTable()}>刷新</div>
+    </>
   );
 };
 

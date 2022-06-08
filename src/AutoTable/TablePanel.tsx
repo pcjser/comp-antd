@@ -1,7 +1,6 @@
+import { Button, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, Popconfirm } from 'antd';
-import useAutoTable from './useAutoTable';
-import { AutoTableInstance, AutoTableProps } from './interface';
+// import { AutoTableInstance, AutoTableProps } from './interface';
 
 import AutoTableContext from './AutoTableContext';
 
@@ -10,10 +9,11 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
 
   // console.log(dataSource)
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
-  const [autoTableInstance] = useAutoTable();
+  // const [autoTableInstance] = useAutoTable();
 
-  const { getTableList, setTableList, handleRetrieve, setModalStatus } =
+  const { getTableList, refresh, handleRetrieve, setModalStatus, condition } =
     autoTableContext.getInternalHooks();
 
   const actionAassemble = (record) => {
@@ -86,13 +86,18 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
       render: actionAassemble,
     });
 
+    console.log('TablePanel', condition);
+
     (async () => {
+      // console.log('condition=======>', condition);
       setLoading(true);
-      const data = await dataSource();
+      const data = await dataSource(condition);
       setLoading(false);
-      setTableList(data);
+      setData(data ?? []);
     })();
-  }, []);
+  }, [condition, refresh]);
+
+  // console.log('condition=======>', condition);
 
   return (
     // <div>
@@ -110,7 +115,7 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
       // }
       // rowKey={rowKey}
       columns={columns}
-      dataSource={getTableList()}
+      dataSource={data}
       loading={loading}
       pagination={false}
       // size={size}

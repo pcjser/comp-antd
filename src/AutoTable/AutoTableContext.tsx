@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AutoTableInstance } from './interface';
+// import { AutoTableInstance } from './interface';
 
 export interface AutoTableContextProps {
   // registerAutoTable: (name: string, table: AutoTableInstance) => void;

@@ -1,8 +1,10 @@
 import React from 'react';
-import { AutoTableInstance, AutoTableProps } from './interface';
 import AutoTable from './AutoTable';
-import TablePanel from './TablePanel';
+import { AutoTableInstance, AutoTableProps } from './interface';
+
+import ConditionPanel from './ConditionPanel';
 import ModalPanel from './ModalPanel';
+import TablePanel from './TablePanel';
 
 import useAutoTable from './useAutoTable';
 
@@ -27,6 +29,8 @@ interface RefAutoTableType extends InternalAutoTableType {
 const RefAutoTable: RefAutoTableType = InternalAutoTable as RefAutoTableType;
 
 RefAutoTable.TablePanel = TablePanel;
+// RefAutoTable.ConditionPanel = (props) => {console.log(props); return <ConditionPanel pkey="condition" {...props} />};
+RefAutoTable.ConditionPanel = ConditionPanel;
 RefAutoTable.ModalPanel = ModalPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;
