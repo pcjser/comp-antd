@@ -74,6 +74,8 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
     );
   };
 
+  // let timer = null;
+
   useEffect(() => {
     if (serial) columns?.unshift({ title: '序号', render: (_, __, index) => index + 1 });
     //   console.log(actions, '=======================');
@@ -89,12 +91,17 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
     console.log('TablePanel', condition);
 
     (async () => {
+      // if (timer) clearTimeout(timer);
       // console.log('condition=======>', condition);
       setLoading(true);
       const data = await dataSource(condition);
       setLoading(false);
-      setPagination({ ...pagination, current: 2 });
-      setData(data ?? []);
+      console.log({ ...pagination, ...data.pagination }, ' =============  ');
+      // timer = setTimeout(() => {
+      //   console.log(6666666, { ...pagination, ...data.pagination });
+      setPagination({ ...pagination, ...data.pagination });
+      // }, 2000);
+      setData(data.data ?? []);
     })();
   }, [condition, refresh]);
 

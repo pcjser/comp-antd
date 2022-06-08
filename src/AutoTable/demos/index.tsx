@@ -1,14 +1,17 @@
-import { Form, Input } from 'antd';
+import { Input } from 'antd';
 import { AutoTable } from 'comp-antd';
 import * as React from 'react';
 
 const getData = (params) =>
   new Promise<Array<object>>(async (resolve) => {
-    const data = await fetch('http://localhost:4567/api/v1/account/table', {
+    const data = await fetch('http://localhost:4567/api/v1/demo/table', {
       // credentials: 'no-cors'
-      mode: 'cors',
+      method: 'post',
+      body: JSON.stringify(params),
+      // mode: 'cors',
     }).then((response) => response.json());
-    console.log(data);
+    // console.log(data);
+    resolve(data.data);
     // console.log(params);
     // setTimeout(() => {
     //   resolve([
@@ -30,19 +33,19 @@ const getData = (params) =>
 
 const columns = [
   {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
+    title: 'UID',
+    dataIndex: 'id',
+    key: 'id',
   },
   {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
+    title: '用户名',
+    dataIndex: 'username',
+    key: 'username',
   },
   {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
+    title: '手机号',
+    dataIndex: 'telephone',
+    key: 'telephone',
   },
 ];
 
@@ -63,8 +66,13 @@ const actions = [
 
 const conditions = [
   {
-    name: 'date',
-    label: '案件归档时间',
+    name: 'username',
+    label: '用户名',
+    component: <Input />,
+  },
+  {
+    name: 'telephone',
+    label: '手机号',
     component: <Input />,
   },
 ];
@@ -74,7 +82,7 @@ export default () => {
 
   // console.log(table);
 
-  const [initialCondition, setInitialCondition] = React.useState({ date: 'test' });
+  const [initialCondition, setInitialCondition] = React.useState({ username: 'aaaa' });
 
   React.useEffect(() => {
     // table.refreshTable();

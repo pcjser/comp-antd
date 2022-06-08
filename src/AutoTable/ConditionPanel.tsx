@@ -53,9 +53,9 @@ const ConditionPanel: React.FC<ConditionPanelProps> = ({
 
     if (initialCondition) {
       //   // setInitialValues(initialValues);
-      form.setFieldsValue({ ...initialCondition });
+      form.setFieldsValue(initialCondition);
       //   //   form.setFieldsValue({ ...initialValues, ...condition });
-      setCondition({ ...initialCondition });
+      setCondition(initialCondition);
       //   //   //   setSearch({ ...search, ...initialValues });
     }
   }, [initialCondition, refresh]);
@@ -73,12 +73,13 @@ const ConditionPanel: React.FC<ConditionPanelProps> = ({
     //           ...form.getFieldsValue(),
     //         },
     //   );
-    setCondition({ ...condition, ...form.getFieldsValue() });
+    setCondition({ ...form.getFieldsValue(), current: 1 });
   };
 
   const handleReset = () => {
-    //   form.resetFields();
-    form.setFieldsValue(initialCondition ?? {});
+    form.resetFields();
+    form.setFieldsValue(initialCondition);
+    // setCondition(initialCondition);
     //   onResetAfter && onResetAfter();
   };
 

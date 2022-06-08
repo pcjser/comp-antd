@@ -10,20 +10,21 @@ export class AutoTableStore {
   refresh = false;
   // tableList = []; // 表格数据
   condition = {}; // 查询条件
-  pagination = { total: 121, pageSize: 10, current: 1 }; // 分页信息
+  pagination = { pageSize: 2, current: 1 }; // 分页信息
   showModal = false; //
   record = null;
 
   forceRootUpdate: () => void;
 
   setCondition = (data) => {
-    this.condition = data;
+    this.condition = { ...this.condition, ...data };
     this.forceRootUpdate();
     // console.log(this.condition);
   };
 
   setPagination = (data) => {
     this.pagination = data;
+    this.forceRootUpdate();
   };
 
   refreshTable = () => {

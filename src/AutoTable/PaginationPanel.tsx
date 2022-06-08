@@ -1,6 +1,5 @@
-import * as React from 'react';
 import { Pagination } from 'antd';
-import zh_CN from 'antd/es/locale/zh_CN';
+import * as React from 'react';
 import AutoTableContext from './AutoTableContext';
 
 const PaginationPanel = ({}) => {
@@ -9,18 +8,23 @@ const PaginationPanel = ({}) => {
   const { pagination, condition, setCondition } = autoTableContext.getInternalHooks();
 
   React.useEffect(() => {
-    console.log('PaginationPanel');
+    console.log('PaginationPanel', condition, pagination);
 
     // form.setFieldsValue(record);
+    setCondition(pagination);
   }, []);
 
   return (
-    <Pagination
-      locale={zh_CN}
-      onChange={(current, pageSize) => setCondition({ ...condition, current, pageSize })}
-      current={pagination.current}
-      total={pagination.total}
-    />
+    <>
+      {JSON.stringify(pagination)}
+      <Pagination
+        onChange={(current, pageSize) => setCondition({ ...condition, current, pageSize })}
+        current={pagination.current}
+        total={pagination.total}
+        pageSize={pagination.pageSize}
+        showSizeChanger
+      />
+    </>
   );
 };
 

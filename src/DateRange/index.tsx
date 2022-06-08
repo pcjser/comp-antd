@@ -1,10 +1,10 @@
-import React, { useState, useRef, useMemo, FC, useEffect } from 'react';
+import { CalendarOutlined, CloseCircleFilled, SwapRightOutlined } from '@ant-design/icons';
 import { DatePicker } from 'antd';
+import zhCN from 'antd/es/date-picker/locale/zh_CN';
 import classNames from 'classnames';
-import { SwapRightOutlined, CloseCircleFilled, CalendarOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import localeCN from 'antd/es/date-picker/locale/zh_CN';
+import * as React from 'react';
 
 import { DateRangeProps } from './interface';
 
@@ -51,8 +51,8 @@ const pickerToFormat = (picker: string, separator: string) => {
   }
 };
 
-const DateRange: FC<DateRangeProps> = ({
-  locale = localeCN,
+const DateRange: React.FC<DateRangeProps> = ({
+  locale = zhCN,
   picker = 'date',
   separator = '-',
   disabled = false,
@@ -63,25 +63,25 @@ const DateRange: FC<DateRangeProps> = ({
   className,
   style,
 }) => {
-  const pickerRef = useRef(null);
-  const clearRef = useRef(null);
+  const pickerRef = React.useRef(null);
+  const clearRef = React.useRef(null);
 
-  const [focus, setFocus] = useState<boolean>(false);
-  const [barOffsetLeft, setBarOffsetLeft] = useState<number>(0);
-  const [begin, setBegin] = useState<moment.Moment | null>(
+  const [focus, setFocus] = React.useState<boolean>(false);
+  const [barOffsetLeft, setBarOffsetLeft] = React.useState<number>(0);
+  const [begin, setBegin] = React.useState<moment.Moment | null>(
     defaultValue ? moment(defaultValue?.[0]) : null,
   );
-  const [end, setEnd] = useState<moment.Moment | null>(
+  const [end, setEnd] = React.useState<moment.Moment | null>(
     defaultValue ? moment(defaultValue?.[1]) : null,
   );
-  const [time, setTime] = useState<NodeJS.Timeout>();
+  const [time, setTime] = React.useState<NodeJS.Timeout>();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (value) setBegin(moment(value?.[0]));
     if (value) setEnd(moment(value?.[1]));
   }, [value]);
 
-  const result = useMemo(() => {
+  const result = React.useMemo(() => {
     if (!begin || !end) return undefined;
     return [
       begin.format(pickerToFormat(picker, separator)) as string,

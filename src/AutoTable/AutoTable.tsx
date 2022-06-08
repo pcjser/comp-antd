@@ -1,7 +1,10 @@
+import { ConfigProvider } from 'antd';
 import * as React from 'react';
 import AutoTableContext from './AutoTableContext';
 import { AutoTableInstance, AutoTableProps } from './interface';
 import useAutoTable from './useAutoTable';
+
+import zhCN from 'antd/es/locale/zh_CN';
 
 const AutoTable: React.ForwardRefRenderFunction<AutoTableInstance, AutoTableProps> = ({
   table,
@@ -46,33 +49,35 @@ const AutoTable: React.ForwardRefRenderFunction<AutoTableInstance, AutoTableProp
 
     return (
       <AutoTableContext.Provider value={autoTableInstance}>
-        {React.Children.map(children, (child) => {
-          return child
-            ? React.cloneElement(child as React.ReactElement, {
-                // initialCondition,
-                // search,
-                // apiMap,
-                // setSearch,
-                // dataSource,
-                // operate,
-                // record,
-                // pagination,
-                // setOperate,
-                // selectedRows,
-                // setSelectedRows,
-                // selectedRowKeys,
-                // setSelectedRowKeys,
-                // onClose,
-                // onCreate,
-                // submitCreate,
-                // onUpdate,
-                // submitUpdate,
-                // onDelete,
-                // onRetrieve,
-                // ...rest,
-              })
-            : null;
-        })}
+        <ConfigProvider locale={zhCN}>
+          {React.Children.map(children, (child) => {
+            return child
+              ? React.cloneElement(child as React.ReactElement, {
+                  // initialCondition,
+                  // search,
+                  // apiMap,
+                  // setSearch,
+                  // dataSource,
+                  // operate,
+                  // record,
+                  // pagination,
+                  // setOperate,
+                  // selectedRows,
+                  // setSelectedRows,
+                  // selectedRowKeys,
+                  // setSelectedRowKeys,
+                  // onClose,
+                  // onCreate,
+                  // submitCreate,
+                  // onUpdate,
+                  // submitUpdate,
+                  // onDelete,
+                  // onRetrieve,
+                  // ...rest,
+                })
+              : null;
+          })}
+        </ConfigProvider>
       </AutoTableContext.Provider>
     );
   };
