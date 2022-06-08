@@ -5,6 +5,7 @@ import { AutoTableInstance, AutoTableProps } from './interface';
 import ConditionPanel from './ConditionPanel';
 import ModalPanel from './ModalPanel';
 import TablePanel from './TablePanel';
+import PaginationPanel from './PaginationPanel';
 
 import useAutoTable from './useAutoTable';
 
@@ -32,6 +33,7 @@ RefAutoTable.TablePanel = TablePanel;
 // RefAutoTable.ConditionPanel = (props) => {console.log(props); return <ConditionPanel pkey="condition" {...props} />};
 RefAutoTable.ConditionPanel = ConditionPanel;
 RefAutoTable.ModalPanel = ModalPanel;
+RefAutoTable.PaginationPanel = PaginationPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;
 

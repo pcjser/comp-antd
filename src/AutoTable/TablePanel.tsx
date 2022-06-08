@@ -13,7 +13,7 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
 
   // const [autoTableInstance] = useAutoTable();
 
-  const { getTableList, refresh, handleRetrieve, setModalStatus, condition } =
+  const { pagination, setPagination, refresh, handleRetrieve, setModalStatus, condition } =
     autoTableContext.getInternalHooks();
 
   const actionAassemble = (record) => {
@@ -93,6 +93,7 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
       setLoading(true);
       const data = await dataSource(condition);
       setLoading(false);
+      setPagination({ ...pagination, current: 2 });
       setData(data ?? []);
     })();
   }, [condition, refresh]);

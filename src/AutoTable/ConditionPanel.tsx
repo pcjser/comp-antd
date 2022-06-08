@@ -55,7 +55,7 @@ const ConditionPanel: React.FC<ConditionPanelProps> = ({
       //   // setInitialValues(initialValues);
       form.setFieldsValue({ ...initialCondition });
       //   //   form.setFieldsValue({ ...initialValues, ...condition });
-      setCondition({ ...condition, ...initialCondition });
+      setCondition({ ...initialCondition });
       //   //   //   setSearch({ ...search, ...initialValues });
     }
   }, [initialCondition, refresh]);

@@ -8,9 +8,9 @@ export class AutoTableStore {
 
   // initialValues = {};
   refresh = false;
-  tableList = []; // 表格数据
+  // tableList = []; // 表格数据
   condition = {}; // 查询条件
-  pagination = null; // 分页信息
+  pagination = { total: 121, pageSize: 10, current: 1 }; // 分页信息
   showModal = false; //
   record = null;
 
@@ -22,10 +22,9 @@ export class AutoTableStore {
     // console.log(this.condition);
   };
 
-  // setInitialValues = (data) => {
-  //   this.initialValues = data;
-  //   this.condition = { ...this.condition, ...this.initialValues };
-  // };
+  setPagination = (data) => {
+    this.pagination = data;
+  };
 
   refreshTable = () => {
     console.log('刷新');
@@ -39,16 +38,16 @@ export class AutoTableStore {
     refreshTable: this.refreshTable,
   });
 
-  setTableList = (data) => {
-    this.tableList = data;
-    this.forceRootUpdate();
-  };
+  // setTableList = (data) => {
+  //   this.tableList = data;
+  //   this.forceRootUpdate();
+  // };
 
-  getTableList = () => {
-    return this.tableList;
-  };
+  // getTableList = () => {
+  //   return this.tableList;
+  // };
 
-  getModalStatus = () => this.showModal;
+  // getModalStatus = () => this.showModal;
 
   setModalStatus = (tag) => {
     this.showModal = tag;
@@ -62,7 +61,7 @@ export class AutoTableStore {
     // this.forceRootUpdate();
   };
 
-  getRecord = () => this.record;
+  // getRecord = () => this.record;
 
   getInternalHooks: InternalHooks = () => {
     // console.log(77777);
@@ -82,13 +81,14 @@ export class AutoTableStore {
       refresh: this.refresh,
       condition: this.condition,
       setCondition: this.setCondition,
-      // setInitialValues: this.setInitialValues,
+      setPagination: this.setPagination,
+      pagination: this.pagination,
       record: this.record,
       showModal: this.showModal,
       handleRetrieve: this.handleRetrieve,
-      getTableList: this.getTableList,
-      setTableList: this.setTableList,
-      getModalStatus: this.getModalStatus,
+      // getTableList: this.getTableList,
+      // setTableList: this.setTableList,
+      // getModalStatus: this.getModalStatus,
       setModalStatus: this.setModalStatus,
     };
     // }

@@ -3,24 +3,29 @@ import { AutoTable } from 'comp-antd';
 import * as React from 'react';
 
 const getData = (params) =>
-  new Promise<Array<object>>((resolve) => {
-    console.log(params);
-    setTimeout(() => {
-      resolve([
-        {
-          id: 10,
-          name: 'demo',
-        },
-        {
-          id: 20,
-          name: 'HEHEH',
-        },
-        {
-          id: 30,
-          name: params.date,
-        },
-      ]);
-    }, 500);
+  new Promise<Array<object>>(async (resolve) => {
+    const data = await fetch('http://localhost:4567/api/v1/account/table', {
+      // credentials: 'no-cors'
+      mode: 'cors',
+    }).then((response) => response.json());
+    console.log(data);
+    // console.log(params);
+    // setTimeout(() => {
+    //   resolve([
+    //     {
+    //       id: 10,
+    //       name: 'demo',
+    //     },
+    //     {
+    //       id: 20,
+    //       name: 'HEHEH',
+    //     },
+    //     {
+    //       id: 30,
+    //       name: params.date,
+    //     },
+    //   ]);
+    // }, 500);
   });
 
 const columns = [
@@ -48,30 +53,19 @@ const actions = [
   },
 ];
 
-const formItems = (
-  <>
-    <Form.Item name="name" label="姓名">
-      <Input />
-    </Form.Item>
-  </>
-);
+// const formItems = (
+//   <>
+//     <Form.Item name="name" label="姓名">
+//       <Input />
+//     </Form.Item>
+//   </>
+// );
 
 const conditions = [
   {
     name: 'date',
     label: '案件归档时间',
     component: <Input />,
-    // icol: 12,
-    // onComponent: props => (
-    //     <ProDatePicker.DateRange
-    //         options={[
-    //             { label: "日", value: "date" },
-    //             { label: "月", value: "month" },
-    //             { label: "年", value: "year" }
-    //         ]}
-    //         {...props}
-    //     />
-    // )
   },
 ];
 
@@ -84,10 +78,9 @@ export default () => {
 
   React.useEffect(() => {
     // table.refreshTable();
-
-    setTimeout(() => {
-      setInitialCondition({ date: 'yyyyy' });
-    }, 2000);
+    // setTimeout(() => {
+    //   setInitialCondition({ date: 'yyyyy' });
+    // }, 2000);
   }, []);
 
   return (
@@ -102,6 +95,7 @@ export default () => {
           dataSource={getData}
         />
         {/* <AutoTable.ModalPanel formItems={formItems} /> */}
+        <AutoTable.PaginationPanel />
       </AutoTable>
       <div onClick={() => table.refreshTable()}>刷新</div>
     </>
