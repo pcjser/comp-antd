@@ -94,7 +94,7 @@ export default () => {
   return (
     <>
       <AutoTable table={table}>
-        <AutoTable.ConditionPanel initialCondition={initialCondition} conditions={conditions} />
+        <AutoTable.ConditionPanel conditions={conditions} />
         <AutoTable.TablePanel
           rowKey="id"
           serial

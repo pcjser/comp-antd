@@ -1,15 +1,21 @@
 import { Button, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-// import { AutoTableInstance, AutoTableProps } from './interface';
+import { TablePanelProps } from './hooks/interface';
 
-import AutoTableContext from './AutoTableContext';
+import AutoTableContext from './hooks/context';
 
-const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
+const TablePanel: React.FC<TablePanelProps> = ({
+  columns,
+  dataSource,
+  serial,
+  actions,
+  ...rest
+}) => {
   const autoTableContext = React.useContext(AutoTableContext);
 
   // console.log(dataSource)
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<object[]>([]);
 
   // const [autoTableInstance] = useAutoTable();
 
@@ -96,12 +102,8 @@ const TablePanel = ({ columns, dataSource, serial, actions, ...rest }) => {
       setLoading(true);
       const data = await dataSource(condition);
       setLoading(false);
-      console.log({ ...pagination, ...data.pagination }, ' =============  ');
-      // timer = setTimeout(() => {
-      //   console.log(6666666, { ...pagination, ...data.pagination });
       setPagination({ ...pagination, ...data.pagination });
-      // }, 2000);
-      setData(data.data ?? []);
+      setData(data.data);
     })();
   }, [condition, refresh]);
 

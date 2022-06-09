@@ -1,7 +1,7 @@
 import { Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
 
-import AutoTableContext from './AutoTableContext';
+import AutoTableContext from './context';
 
 const ModalPanel = ({ formItems }) => {
   const autoTableContext = React.useContext(AutoTableContext);

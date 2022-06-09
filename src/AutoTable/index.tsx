@@ -1,38 +1,42 @@
 import React from 'react';
 import AutoTable from './AutoTable';
-import { AutoTableInstance, AutoTableProps } from './interface';
+import {
+  AutoTableInstance,
+  AutoTableProps,
+  ConditionPanelProps,
+  PaginationPanelProps,
+  TablePanelProps,
+} from './hooks/interface';
 
 import ConditionPanel from './ConditionPanel';
-import ModalPanel from './ModalPanel';
-import TablePanel from './TablePanel';
 import PaginationPanel from './PaginationPanel';
+import TablePanel from './TablePanel';
 
-import useAutoTable from './useAutoTable';
-
-// const AutoTable = () => (
-//   <div>7777</div>
-// )
+import useAutoTable from './hooks/useAutoTable';
 
 const InternalAutoTable = React.forwardRef<AutoTableInstance, AutoTableProps>(AutoTable) as <
   Values = any,
 >(
-  props: React.PropsWithChildren<AutoTableProps<Values>> & {
-    ref?: React.Ref<AutoTableInstance<Values>>;
+  props: React.PropsWithChildren<AutoTableProps> & {
+    ref?: React.Ref<AutoTableInstance>;
   },
 ) => React.ReactElement;
 
 type InternalAutoTableType = typeof InternalAutoTable;
 
 interface RefAutoTableType extends InternalAutoTableType {
+  PaginationPanel: React.FC<PaginationPanelProps>;
+  TablePanel: React.FC<TablePanelProps>;
+  ConditionPanel: React.FC<ConditionPanelProps>;
+  // ModalPanel: ({ formItems }: { formItems: any; }) => JSX.Element;
   useAutoTable: typeof useAutoTable;
 }
 
 const RefAutoTable: RefAutoTableType = InternalAutoTable as RefAutoTableType;
 
 RefAutoTable.TablePanel = TablePanel;
-// RefAutoTable.ConditionPanel = (props) => {console.log(props); return <ConditionPanel pkey="condition" {...props} />};
 RefAutoTable.ConditionPanel = ConditionPanel;
-RefAutoTable.ModalPanel = ModalPanel;
+// RefAutoTable.ModalPanel = ModalPanel;
 RefAutoTable.PaginationPanel = PaginationPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;

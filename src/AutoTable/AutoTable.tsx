@@ -1,8 +1,8 @@
 import { ConfigProvider } from 'antd';
 import * as React from 'react';
-import AutoTableContext from './AutoTableContext';
-import { AutoTableInstance, AutoTableProps } from './interface';
-import useAutoTable from './useAutoTable';
+import AutoTableContext from './hooks/context';
+import { AutoTableInstance, AutoTableProps } from './hooks/interface';
+import useAutoTable from './hooks/useAutoTable';
 
 import zhCN from 'antd/es/locale/zh_CN';
 

@@ -1,8 +1,7 @@
 import { Button, Col, Form, Row, Space } from 'antd';
 import * as React from 'react';
-
-import AutoTableContext from './AutoTableContext';
-import { ConditionPanelProps } from './interface';
+import AutoTableContext from './hooks/context';
+import { ConditionPanelProps } from './hooks/interface';
 
 // // const ConditionItem = ({ type, onComponent, placeholder, ...rest }) => {
 // //   if (onComponent) return onComponent(rest);
@@ -26,65 +25,40 @@ import { ConditionPanelProps } from './interface';
 const ConditionPanel: React.FC<ConditionPanelProps> = ({
   conditions,
   col = 6,
-  // search,
-  // pagination,
-  // setSearch,
   initialCondition,
+  onSearch,
+  onReset,
   ...rest
-  // onResetAfter,
 }) => {
   console.log(rest);
   const autoTableContext = React.useContext(AutoTableContext);
 
   const [form] = Form.useForm();
 
-  //   console.log(form);
-
-  const { refresh, condition, setCondition } = autoTableContext.getInternalHooks();
-
-  // if (initialValues) {
-  //   form.setFieldsValue({ ...initialValues, ...condition });
-  //   // setCondition({ ...condition, ...initialValues });
-  //   //   setSearch({ ...search, ...initialValues });
-  // }
+  const { refresh, setCondition } = autoTableContext.getInternalHooks();
 
   React.useEffect(() => {
     // console.log('ConditionPanel');
 
     if (initialCondition) {
-      //   // setInitialValues(initialValues);
       form.setFieldsValue(initialCondition);
-      //   //   form.setFieldsValue({ ...initialValues, ...condition });
       setCondition(initialCondition);
-      //   //   //   setSearch({ ...search, ...initialValues });
     }
   }, [initialCondition, refresh]);
 
   const handleSubmit = () => {
-    //   setSearch(
-    //     pagination
-    //       ? {
-    //           ...search,
-    //           ...form.getFieldsValue(),
-    //           current: 1,
-    //         }
-    //       : {
-    //           ...search,
-    //           ...form.getFieldsValue(),
-    //         },
-    //   );
     setCondition({ ...form.getFieldsValue(), current: 1 });
+    onSearch && onSearch();
   };
 
   const handleReset = () => {
     form.resetFields();
     form.setFieldsValue(initialCondition);
-    // setCondition(initialCondition);
-    //   onResetAfter && onResetAfter();
+    onReset && onReset();
   };
 
   return (
-    <Form form={form} name="condition-form">
+    <Form form={form}>
       <Row gutter={col}>
         {conditions.map(({ name, label, icol = col, component }) => (
           <Col span={icol} key={name}>
