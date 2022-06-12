@@ -18,11 +18,10 @@ const PaginationPanel: React.FC<PaginationPanelProps> = ({
 }) => {
   const autoTableContext = React.useContext(AutoTableContext);
 
-  const { pagination, setPagination, setCondition } = autoTableContext.getInternalHooks();
-
+  const { pagination, setCondition } = autoTableContext.getInternalHooks();
+  // console.log('PaginationPanel==========================>render');
   React.useEffect(() => {
-    // console.log('PaginationPanel');
-    setPagination({ current: defaultCurrent, pageSize: defaultPageSize });
+    console.log('PaginationPanel==========================>useEffect');
     setCondition({ current: defaultCurrent, pageSize: defaultPageSize });
   }, []);
 
@@ -45,5 +44,7 @@ const PaginationPanel: React.FC<PaginationPanelProps> = ({
     </Row>
   );
 };
+
+PaginationPanel.displayName = 'PaginationPanel';
 
 export default PaginationPanel;

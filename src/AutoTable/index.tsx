@@ -9,6 +9,8 @@ import {
 } from './hooks/interface';
 
 import ConditionPanel from './ConditionPanel';
+import ModalPanel from './ModalPanel';
+import OperationPanel from './OperationPanel';
 import PaginationPanel from './PaginationPanel';
 import TablePanel from './TablePanel';
 
@@ -36,7 +38,8 @@ const RefAutoTable: RefAutoTableType = InternalAutoTable as RefAutoTableType;
 
 RefAutoTable.TablePanel = TablePanel;
 RefAutoTable.ConditionPanel = ConditionPanel;
-// RefAutoTable.ModalPanel = ModalPanel;
+RefAutoTable.OperationPanel = OperationPanel;
+RefAutoTable.ModalPanel = ModalPanel;
 RefAutoTable.PaginationPanel = PaginationPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;

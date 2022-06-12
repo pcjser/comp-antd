@@ -27,6 +27,7 @@ const AutoTable: React.ForwardRefRenderFunction<AutoTableInstance, AutoTableProp
     // console.log(initialValues);
 
     React.useEffect(() => {
+      // console.log("AutoTable =>>>>>>>>>>>>>>>>>>>>")
       // if (initialCondition) setCondition(initialCondition);
       // console.log(initialCondition, '99999999999999999999');
       // console.log('AutoTable');
@@ -81,5 +82,7 @@ const AutoTable: React.ForwardRefRenderFunction<AutoTableInstance, AutoTableProp
       </AutoTableContext.Provider>
     );
   };
+
+AutoTable.displayName = 'AutoTable';
 
 export default AutoTable;

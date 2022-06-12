@@ -30,21 +30,20 @@ const ConditionPanel: React.FC<ConditionPanelProps> = ({
   onReset,
   ...rest
 }) => {
-  console.log(rest);
   const autoTableContext = React.useContext(AutoTableContext);
 
   const [form] = Form.useForm();
 
-  const { refresh, setCondition } = autoTableContext.getInternalHooks();
+  const { setCondition } = autoTableContext.getInternalHooks();
 
+  // console.log('ConditionPanel==============================>render');
   React.useEffect(() => {
-    // console.log('ConditionPanel');
-
+    console.log('ConditionPanel==============================>useEffect');
     if (initialCondition) {
       form.setFieldsValue(initialCondition);
       setCondition(initialCondition);
     }
-  }, [initialCondition, refresh]);
+  }, [initialCondition]);
 
   const handleSubmit = () => {
     setCondition({ ...form.getFieldsValue(), current: 1 });

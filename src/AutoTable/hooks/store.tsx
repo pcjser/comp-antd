@@ -1,4 +1,4 @@
-import { AutoTableInstance, InternalHooks } from './interface';
+import { Action, AutoTableInstance, InternalHooks, Pagination } from './interface';
 
 export class Store {
   constructor(forceRootUpdate: () => void) {
@@ -6,29 +6,12 @@ export class Store {
   }
 
   // initialValues = {};
-  refresh = false;
   // tableList = []; // 表格数据
-  condition = {}; // 查询条件
-  pagination = {}; // 分页信息
-  showModal = false; //
-  record = null;
 
   forceRootUpdate: () => void;
 
-  setCondition = (data) => {
-    this.condition = { ...this.condition, ...data };
-    this.forceRootUpdate();
-  };
-
-  setPagination = (data) => {
-    this.pagination = data;
-    this.forceRootUpdate();
-  };
-
   refreshTable = () => {
-    console.log('刷新');
     this.setCondition({ ...this.condition });
-    // this.refresh = !this.refresh;
     this.forceRootUpdate();
   };
 
@@ -37,42 +20,54 @@ export class Store {
     refreshTable: this.refreshTable,
   });
 
-  // setTableList = (data) => {
-  //   this.tableList = data;
-  //   this.forceRootUpdate();
-  // };
+  getInternalHooks = (): InternalHooks => ({
+    unique: this.unique,
+    condition: this.condition,
+    pagination: this.pagination,
+    record: this.record,
+    action: this.action,
+    setUnique: this.setUnique,
+    setCondition: this.setCondition,
+    setPagination: this.setPagination,
+    openAction: this.openAction,
+    closeAction: this.closeAction,
+    refreshTable: this.refreshTable,
+  });
 
-  // getTableList = () => {
-  //   return this.tableList;
-  // };
-
-  // getModalStatus = () => this.showModal;
-
-  setModalStatus = (tag) => {
-    this.showModal = tag;
+  // ConditionPanel
+  condition = {};
+  setCondition = (data: Record<string, any>) => {
+    this.condition = { ...this.condition, ...data };
     this.forceRootUpdate();
   };
 
-  handleRetrieve = (record) => {
-    console.log(record);
+  // TablePanel
+  unique: string = '';
+  record: Record<string, any> | null = null;
+  action: Action | null = null;
+  setUnique = (unique: string) => (this.unique = unique);
+
+  openAction = (action: Action | null, record: Record<string, any> | null) => {
     this.record = record;
-    this.showModal = true;
-    // this.forceRootUpdate();
+    console.log(action);
+    this.action = action;
+    this.forceRootUpdate();
   };
 
-  // getRecord = () => this.record;
+  closeAction = () => {
+    this.action = null;
+    this.action = null;
+    this.forceRootUpdate();
+  };
 
-  getInternalHooks: InternalHooks = () => ({
-    refresh: this.refresh,
-    condition: this.condition,
-    setCondition: this.setCondition,
-    setPagination: this.setPagination,
-    pagination: this.pagination,
-    record: this.record,
-    showModal: this.showModal,
-    handleRetrieve: this.handleRetrieve,
-    setModalStatus: this.setModalStatus,
-  });
+  // Pagination
+  pagination = {}; // 分页信息
+  setPagination = (data: Pagination) => {
+    this.pagination = { ...this.pagination, ...data };
+    this.forceRootUpdate();
+  };
+
+  // ModalPanel
 }
 
 export default Store;

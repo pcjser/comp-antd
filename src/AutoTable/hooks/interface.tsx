@@ -1,11 +1,6 @@
+import { FormInstance } from 'antd/es/form/Form';
 import { ColumnType } from 'antd/es/table/interface';
 import * as React from 'react';
-
-interface Pagination {
-  current?: number;
-  pageSize?: number;
-  total?: number;
-}
 
 interface Condition {
   name: string;
@@ -14,16 +9,42 @@ interface Condition {
   component: React.ReactNode;
 }
 
+// type OperationType = 'create' | 'delete';
+
+// interface Operation {
+//   operation: OperationType;
+//   label: string;
+//   title: string;
+//   dataSource?: () => Promise<Record<string, any>>;
+// }
+
+export type ActionType = 'create' | 'retrieve' | 'update' | 'delete' | 'extend';
+
+export interface Action {
+  action: ActionType;
+  label: string;
+  title?: string;
+  dataSource?: (key: string) => Promise<Record<string, any>>;
+}
+
+export interface Pagination {
+  current?: number;
+  pageSize?: number;
+  total?: number;
+}
+
 export interface InternalHooks {
-  refresh: boolean;
-  condition: object;
+  unique: string;
+  condition: Record<string, any>;
   pagination: Pagination;
-  record: object;
-  showModal: boolean;
-  setCondition: (condition: object) => void;
+  record: Record<string, any> | null;
+  action: Action | null;
+  setUnique: (key: string) => void;
+  setCondition: (condition: Record<string, any>) => void;
   setPagination: (pagination: Pagination) => void;
-  handleRetrieve: () => void;
-  setModalStatus: () => void;
+  openAction: (action: Action, record: Record<string, any> | null) => void;
+  closeAction: () => void;
+  refreshTable: () => void;
 }
 
 export interface AutoTableInstance {
@@ -44,14 +65,19 @@ export interface ConditionPanelProps {
   onReset?: () => void;
 }
 
+export interface OperationPanelProps {
+  operations: Action[];
+}
+
 export interface TablePanelProps {
-  columns: ColumnType<object>;
-  dataSource: (condition: object) => Promise<{
+  columns: ColumnType<Record<string, any>>[];
+  dataSource: (condition: Record<string, any>) => Promise<{
     pagination?: Pagination;
-    data: object[];
+    data: Record<string, any>[];
   }>;
   serial?: boolean;
-  actions?: object[];
+  actions?: Action[];
+  unique: string;
 }
 
 export interface PaginationPanelProps {
@@ -66,4 +92,8 @@ export interface PaginationPanelProps {
   simple: boolean;
   size: 'default' | 'small';
   showTotal: (total: number, range: [number, number]) => React.ReactNode;
+}
+
+export interface ModalPanelProps {
+  formItems: (form: FormInstance, action: Action, record: Record<string, any>) => React.ReactNode;
 }

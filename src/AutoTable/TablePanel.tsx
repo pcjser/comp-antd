@@ -1,6 +1,6 @@
-import { Button, Space, Table } from 'antd';
+import { Button, message, Popconfirm, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { TablePanelProps } from './hooks/interface';
+import { Action, TablePanelProps } from './hooks/interface';
 
 import AutoTableContext from './hooks/context';
 
@@ -9,53 +9,71 @@ const TablePanel: React.FC<TablePanelProps> = ({
   dataSource,
   serial,
   actions,
+  unique,
   ...rest
 }) => {
   const autoTableContext = React.useContext(AutoTableContext);
 
-  // console.log(dataSource)
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<object[]>([]);
-
-  // const [autoTableInstance] = useAutoTable();
-
-  const { pagination, setPagination, refresh, handleRetrieve, setModalStatus, condition } =
+  const [data, setData] = useState<Record<string, any>[]>([]);
+  const { setPagination, openAction, setUnique, setCondition, condition } =
     autoTableContext.getInternalHooks();
 
-  const actionAassemble = (record) => {
+  const actionAassemble: React.FC<Record<string, any>> = (record) => {
+    const labelFilter = (action: Action | null) => {
+      if (!action) return '';
+      switch (action.action) {
+        case 'retrieve':
+          return '查看';
+        case 'update':
+          return '更新';
+        case 'delete':
+          return '删除';
+      }
+    };
+
     return (
       <Space>
-        {actions.map((type) => {
-          switch (type.value) {
+        {actions?.map((action) => {
+          switch (action.action) {
             case 'retrieve':
               return (
                 <Button
                   type="link"
                   key="retrieve"
-                  onClick={() => {
-                    handleRetrieve(record);
-                    setModalStatus(true);
+                  onClick={async () => {
+                    if (action.dataSource) {
+                      const data = await action.dataSource(record[unique]);
+                      record = { ...record, ...data };
+                    }
+                    openAction(action, record);
                   }}
                 >
-                  {type.label}
+                  {labelFilter(action)}
                 </Button>
               );
-            // case 'update':
-            //   return (
-            //     <Button type="link" key="update" onClick={() => onUpdate(record)}>
-            //       {type.label}
-            //     </Button>
-            //   );
-            // case 'delete':
-            //   return (
-            //     <Popconfirm
-            //       title="确定要删除此条数据？"
-            //       key="delete"
-            //       onConfirm={() => onDelete(record)}
-            //     >
-            //       <Button type="link">{type.label}</Button>
-            //     </Popconfirm>
-            //   );
+            case 'update':
+              return (
+                <Button type="link" key="update" onClick={() => openAction(action, record)}>
+                  {labelFilter(action)}
+                </Button>
+              );
+            case 'delete':
+              return (
+                <Popconfirm
+                  title="确定要删除此条数据？"
+                  key="delete"
+                  onConfirm={async () => {
+                    if (action.dataSource) {
+                      await action.dataSource(record[unique]);
+                      message.success('删除成功');
+                      setCondition({ current: 1 });
+                    }
+                  }}
+                >
+                  <Button type="link"> {labelFilter(action)}</Button>
+                </Popconfirm>
+              );
             default:
               return null;
           }
@@ -82,40 +100,45 @@ const TablePanel: React.FC<TablePanelProps> = ({
 
   // let timer = null;
 
+  // console.log('TablePanel==============================>render');
   useEffect(() => {
-    if (serial) columns?.unshift({ title: '序号', render: (_, __, index) => index + 1 });
-    //   console.log(actions, '=======================');
+    console.log('TablePanel==============================>useEffect');
 
-    // if (actions?.length > 0)
-    columns?.push({
-      title: '操作',
-      key: 'oprate',
-      // width: 10 * actions.length,
-      render: actionAassemble,
-    });
-
-    console.log('TablePanel', condition);
+    setUnique(unique);
 
     (async () => {
-      // if (timer) clearTimeout(timer);
-      // console.log('condition=======>', condition);
       setLoading(true);
       const data = await dataSource(condition);
       setLoading(false);
-      setPagination({ ...pagination, ...data.pagination });
+      if (data.pagination) setPagination(data.pagination);
       setData(data.data);
     })();
-  }, [condition, refresh]);
+  }, [unique, condition]);
 
   // console.log('condition=======>', condition);
 
+  if (serial)
+    columns = [
+      {
+        title: '序号',
+        width: 40,
+        render: (_, record, index) => index + 1,
+      },
+      ...columns,
+    ];
+  //   console.log(actions, '=======================');
+
+  if (actions && actions.length > 0)
+    columns = [
+      ...columns,
+      {
+        title: '操作',
+        key: 'oprate',
+        render: actionAassemble,
+      },
+    ];
+
   return (
-    // <div>
-    //   <Table columns={columns} dataSource={getDataSource()} />
-    //   7777777
-    //   <div onClick={() => setDataSource([{ id: 2, name: 'ddddd' }])}>修改</div>
-    // </div>
-    // <AutoTableContext.Consumer>
     <Table
       // rowSelection={
       //   selection && {
@@ -123,7 +146,7 @@ const TablePanel: React.FC<TablePanelProps> = ({
       //     onChange: handleSelectChange,
       //   }
       // }
-      // rowKey={rowKey}
+      rowKey={unique}
       columns={columns}
       dataSource={data}
       loading={loading}
@@ -132,154 +155,9 @@ const TablePanel: React.FC<TablePanelProps> = ({
       // scroll={scroll}
       {...rest}
     />
-    // </AutoTableContext.Consumer>
   );
-  // }
-
-  // return (
-  //   <div>
-  //     <Table columns={columns} dataSource={context.getDataSource()} />
-  //  <div onClick={() => context.setDataSource([{ id: 2, name: 'ddddd' }])}>修改</div>
-  //   </div>
-  // );    7777777
-  //
 };
 
+TablePanel.displayName = 'TablePanel';
+
 export default TablePanel;
-
-// import React, { FC, useEffect, useState } from 'react';
-// import { Table, Space, Button, Popconfirm } from 'antd';
-
-// import { TablePanelProps } from './interface';
-
-// const TablePanel: FC<TablePanelProps> = ({
-//   columns,
-//   serial = true,
-//   // size = 'middle',
-//   // scroll = {
-//   //   // y: window.innerHeight - 402,
-//   //   x: 'max-content',
-//   // },
-//   // actions = [],
-//   // actionExtends = [],
-//   rowKey,
-//   // selection,
-//   dataSource,
-//   // selectedRowKeys,
-//   // setSelectedRowKeys,
-//   // setSelectedRows,
-//   // onRetrieve,
-//   // onUpdate,
-//   // onDelete,
-//   // search,
-//   // setSearch,
-//   // pagination,
-//   ...rest
-// }) => {
-//   const [data, setData] = useState<Array<object>>([]);
-
-//   useEffect(() => {
-//     if (serial) columns?.unshift({ title: '序号', render: (_, __, index) => index + 1 });
-
-//     (async () => {
-//       // setLoading(true);
-//       const result = await dataSource;
-
-//       setData(result);
-//       // setDataMap(result);
-//       // setLoading(false);
-//       // if (unique && window?.sessionStorage)
-//       //   window.sessionStorage[`map-select-${unique}`] = JSON.stringify(result);
-//     })();
-//   }, []);
-
-//   // const actionAassemble = (record) => {
-//   //   return (
-//   //     <Space size={0}>
-//   //       {actions.map((type) => {
-//   //         switch (type.value) {
-//   //           case 'retrieve':
-//   //             return (
-//   //               <Button type="link" key="retrieve" onClick={() => onRetrieve(record)}>
-//   //                 {type.label}
-//   //               </Button>
-//   //             );
-//   //           case 'update':
-//   //             return (
-//   //               <Button type="link" key="update" onClick={() => onUpdate(record)}>
-//   //                 {type.label}
-//   //               </Button>
-//   //             );
-//   //           case 'delete':
-//   //             return (
-//   //               <Popconfirm
-//   //                 title="确定要删除此条数据？"
-//   //                 key="delete"
-//   //                 onConfirm={() => onDelete(record)}
-//   //               >
-//   //                 <Button type="link">{type.label}</Button>
-//   //               </Popconfirm>
-//   //             );
-//   //           default:
-//   //             return null;
-//   //         }
-//   //       })}
-//   //       {actionExtends.map(({ label, action }) => (
-//   //         <Button
-//   //           type="link"
-//   //           key={label}
-//   //           onClick={() =>
-//   //             action(record, (current) =>
-//   //               setSearch({
-//   //                 ...search,
-//   //                 current: current ?? search.current,
-//   //               }),
-//   //             )
-//   //           }
-//   //         >
-//   //           {label}
-//   //         </Button>
-//   //       ))}
-//   //     </Space>
-//   //   );
-//   // };
-
-//   // const handleSelectChange = (keys, rows) => {
-//   //   setSelectedRows(rows);
-//   //   setSelectedRowKeys(keys);
-//   // };
-
-//   // if (actions?.length > 0 || actionExtends.length > 0)
-//   //   columns = [
-//   //     ...columns,
-//   //     {
-//   //       title: '操作',
-//   //       key: 'oprate',
-//   //       width: 10 * actions.length,
-//   //       render: actionAassemble,
-//   //     },
-//   //   ];
-
-//   return (
-//     <Table
-//       // rowSelection={
-//       //   selection && {
-//       //     selectedRowKeys,
-//       //     onChange: handleSelectChange,
-//       //   }
-//       // }
-//       rowKey={rowKey}
-//       columns={columns}
-//       dataSource={data}
-//       // loading={!Boolean(tableData?.data)}
-//       pagination={false}
-//       // size={size}
-//       // scroll={scroll}
-//       {...rest}
-//     />
-//   );
-// };
-
-// TablePanel.displayName = 'TablePanel';
-
-// export default TablePanel;

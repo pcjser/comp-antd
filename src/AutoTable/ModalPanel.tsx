@@ -1,110 +1,84 @@
-import { Form, Modal } from 'antd';
+import { Button, Form, message, Modal, Space } from 'antd';
 import React, { useEffect } from 'react';
 
-import AutoTableContext from './context';
+import AutoTableContext from './hooks/context';
+import { Action, ModalPanelProps } from './hooks/interface';
 
-const ModalPanel = ({ formItems }) => {
+const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
   const autoTableContext = React.useContext(AutoTableContext);
 
-  // console.log(dataSource)
-  // const [loading, setLoading] = useState(false);
-
-  // const [autoTableInstance] = useAutoTable();
-
-  // console.log(autoTableInstance);
-
-  // const { setModalStatus, showModal, record } = autoTableContext.getInternalHooks();
-
-  // console.log(showModal);
-  // const actionAassemble = (record) => {
-  //   return (
-  //     <Space>
-  //       {actions.map((type) => {
-  //         switch (type.value) {
-  //           case 'retrieve':
-  //             return (
-  //               <Button type="link" key="retrieve" onClick={console.log}>
-  //                 {type.label}
-  //               </Button>
-  //             );
-  //           // case 'update':
-  //           //   return (
-  //           //     <Button type="link" key="update" onClick={() => onUpdate(record)}>
-  //           //       {type.label}
-  //           //     </Button>
-  //           //   );
-  //           // case 'delete':
-  //           //   return (
-  //           //     <Popconfirm
-  //           //       title="确定要删除此条数据？"
-  //           //       key="delete"
-  //           //       onConfirm={() => onDelete(record)}
-  //           //     >
-  //           //       <Button type="link">{type.label}</Button>
-  //           //     </Popconfirm>
-  //           //   );
-  //           default:
-  //             return null;
-  //         }
-  //       })}
-  //       {/* {actionExtends.map(({ label, action }) => (
-  //         <Button
-  //           type="link"
-  //           key={label}
-  //           onClick={() =>
-  //             action(record, (current) =>
-  //               setSearch({
-  //                 ...search,
-  //                 current: current ?? search.current,
-  //               }),
-  //             )
-  //           }
-  //         >
-  //           {label}
-  //         </Button>
-  //       ))} */}
-  //     </Space>
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (serial) columns?.unshift({ title: '序号', render: (_, __, index) => index + 1 });
-  //   //   console.log(actions, '=======================');
-
-  //   // if (actions?.length > 0)
-  //   columns?.push({
-  //     title: '操作',
-  //     key: 'oprate',
-  //     // width: 10 * actions.length,
-  //     render: actionAassemble,
-  //   });
-
-  //   (async () => {
-  //     setLoading(true);
-  //     const data = await dataSource();
-  //     setLoading(false);
-  //     setTableList(data);
-  //   })();
-  // }, []);
-
-  // console.log(showModal)
+  const { unique, record, action, closeAction, refreshTable } = autoTableContext.getInternalHooks();
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    console.log('ModalPanel');
+    console.log('ModalPanel====================================>useEffect');
 
-    // form.setFieldsValue(record);
-  }, []);
+    form.setFieldsValue(record);
+  }, [record]);
+
+  const titleFilter = (action: Action | null) => {
+    if (!action) return '';
+    if (action.title) return action.title;
+    switch (action.action) {
+      case 'create':
+        return '新增';
+      case 'retrieve':
+        return '查看';
+      case 'update':
+        return '更新';
+    }
+  };
+
+  const footerFilter = (action: Action | null) => {
+    if (!action) return null;
+    return (
+      <Space>
+        {action.action === 'create' && (
+          <Button type="primary" onClick={console.log}>
+            新增
+          </Button>
+        )}
+        {action.action === 'update' && (
+          <Button type="primary" onClick={handleUpdate}>
+            更新
+          </Button>
+        )}
+        <Button onClick={closeAction}>取消</Button>
+      </Space>
+    );
+  };
+
+  const handleUpdate = () => {
+    form
+      .validateFields()
+      .then(async (values) => {
+        if (action && action.dataSource) {
+          const params: Record<string, any> = {};
+          params[unique] = (record as Record<string, any>)[unique];
+          let data = { ...params, ...values };
+          await action.dataSource(data);
+          message.success('更新成功');
+          refreshTable();
+          closeAction();
+        }
+      })
+      .catch(() => message.warning('请先完善表单内容'));
+  };
 
   return (
-    <>
-      <Modal visible={false}>
-        <Form form={form}>{formItems}</Form>
-      </Modal>
-      {/* <div onClick={() => setModalStatus(true)}>6666</div> */}
-    </>
+    <Modal
+      visible={Boolean(action)}
+      title={titleFilter(action)}
+      footer={footerFilter(action)}
+      maskClosable={false}
+      closable={false}
+    >
+      <Form form={form}>{formItems(form, action as Action, record as Record<string, any>)}</Form>
+    </Modal>
   );
 };
+
+ModalPanel.displayName = 'ModalPanel';
 
 export default ModalPanel;

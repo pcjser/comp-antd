@@ -1,34 +1,14 @@
-import { Input } from 'antd';
+import { Form, Input } from 'antd';
 import { AutoTable } from 'comp-antd';
 import * as React from 'react';
 
 const getData = (params) =>
-  new Promise<Array<object>>(async (resolve) => {
+  new Promise(async (resolve) => {
     const data = await fetch('http://localhost:4567/api/v1/demo/table', {
-      // credentials: 'no-cors'
       method: 'post',
       body: JSON.stringify(params),
-      // mode: 'cors',
     }).then((response) => response.json());
-    // console.log(data);
     resolve(data.data);
-    // console.log(params);
-    // setTimeout(() => {
-    //   resolve([
-    //     {
-    //       id: 10,
-    //       name: 'demo',
-    //     },
-    //     {
-    //       id: 20,
-    //       name: 'HEHEH',
-    //     },
-    //     {
-    //       id: 30,
-    //       name: params.date,
-    //     },
-    //   ]);
-    // }, 500);
   });
 
 const columns = [
@@ -51,18 +31,63 @@ const columns = [
 
 const actions = [
   {
-    value: 'retrieve',
-    label: '查看',
+    action: 'retrieve',
+    // label: '查看',
+    // title: '商品xq',
+    // dataSource: (unique) => {
+    //   return new Promise(async (resolve) => {
+    //     const data = await fetch('http://localhost:4567/api/v1/demo/detail', {
+    //       method: 'post',
+    //       body: JSON.stringify({ id: unique }),
+    //     }).then((response) => response.json());
+    //     resolve(data.data);
+    //   });
+    // },
+  },
+  {
+    action: 'update',
+    dataSource: (data) => {
+      return new Promise(async (resolve) => {
+        await fetch('http://localhost:4567/api/v1/demo/update', {
+          method: 'post',
+          body: JSON.stringify(data),
+        }).then((response) => response.json());
+        resolve();
+      });
+    },
+  },
+  {
+    action: 'delete',
+    dataSource: (unique) => {
+      return new Promise(async (resolve) => {
+        await fetch('http://localhost:4567/api/v1/demo/delete', {
+          method: 'post',
+          body: JSON.stringify({ id: unique }),
+        }).then((response) => response.json());
+        resolve();
+      });
+    },
   },
 ];
 
-// const formItems = (
-//   <>
-//     <Form.Item name="name" label="姓名">
-//       <Input />
-//     </Form.Item>
-//   </>
-// );
+const operations = [
+  {
+    action: 'create',
+  },
+];
+
+const formItems = (form, action, record) => {
+  return (
+    <>
+      <Form.Item name="username" label="用户名">
+        <Input disabled={action?.action === 'retrieve'} />
+      </Form.Item>
+      <Form.Item name="createdAt" label="创建时间">
+        <Input readOnly={true} />
+      </Form.Item>
+    </>
+  );
+};
 
 const conditions = [
   {
@@ -95,14 +120,15 @@ export default () => {
     <>
       <AutoTable table={table}>
         <AutoTable.ConditionPanel conditions={conditions} />
+        <AutoTable.OperationPanel operations={operations} />
         <AutoTable.TablePanel
-          rowKey="id"
+          unique="id"
           serial
           actions={actions}
           columns={columns}
           dataSource={getData}
         />
-        {/* <AutoTable.ModalPanel formItems={formItems} /> */}
+        <AutoTable.ModalPanel formItems={formItems} />
         <AutoTable.PaginationPanel />
       </AutoTable>
       <div onClick={() => table.refreshTable()}>刷新</div>
