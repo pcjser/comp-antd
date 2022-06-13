@@ -29,50 +29,18 @@ const columns = [
   },
 ];
 
-const actions = [
+const operations = [
   {
-    action: 'retrieve',
-    // label: '查看',
-    // title: '商品xq',
-    // dataSource: (unique) => {
-    //   return new Promise(async (resolve) => {
-    //     const data = await fetch('http://localhost:4567/api/v1/demo/detail', {
-    //       method: 'post',
-    //       body: JSON.stringify({ id: unique }),
-    //     }).then((response) => response.json());
-    //     resolve(data.data);
-    //   });
-    // },
-  },
-  {
-    action: 'update',
+    action: 'create',
     dataSource: (data) => {
       return new Promise(async (resolve) => {
-        await fetch('http://localhost:4567/api/v1/demo/update', {
+        await fetch('http://localhost:4567/api/v1/demo/create', {
           method: 'post',
           body: JSON.stringify(data),
         }).then((response) => response.json());
         resolve();
       });
     },
-  },
-  {
-    action: 'delete',
-    dataSource: (unique) => {
-      return new Promise(async (resolve) => {
-        await fetch('http://localhost:4567/api/v1/demo/delete', {
-          method: 'post',
-          body: JSON.stringify({ id: unique }),
-        }).then((response) => response.json());
-        resolve();
-      });
-    },
-  },
-];
-
-const operations = [
-  {
-    action: 'create',
   },
 ];
 
@@ -82,8 +50,8 @@ const formItems = (form, action, record) => {
       <Form.Item name="username" label="用户名">
         <Input disabled={action?.action === 'retrieve'} />
       </Form.Item>
-      <Form.Item name="createdAt" label="创建时间">
-        <Input readOnly={true} />
+      <Form.Item name="telephone" label="手机号">
+        <Input />
       </Form.Item>
     </>
   );
@@ -115,6 +83,55 @@ export default () => {
     //   setInitialCondition({ date: 'yyyyy' });
     // }, 2000);
   }, []);
+
+  const actions = [
+    {
+      action: 'retrieve',
+      // label: '查看',
+      // title: '商品xq',
+      // dataSource: (unique) => {
+      //   return new Promise(async (resolve) => {
+      //     const data = await fetch('http://localhost:4567/api/v1/demo/detail', {
+      //       method: 'post',
+      //       body: JSON.stringify({ id: unique }),
+      //     }).then((response) => response.json());
+      //     resolve(data.data);
+      //   });
+      // },
+    },
+    {
+      action: 'update',
+      dataSource: (data) => {
+        return new Promise(async (resolve) => {
+          await fetch('http://localhost:4567/api/v1/demo/update', {
+            method: 'post',
+            body: JSON.stringify(data),
+          }).then((response) => response.json());
+          resolve();
+        });
+      },
+    },
+    {
+      action: 'delete',
+      dataSource: (unique) => {
+        return new Promise(async (resolve) => {
+          await fetch('http://localhost:4567/api/v1/demo/delete', {
+            method: 'post',
+            body: JSON.stringify({ id: unique }),
+          }).then((response) => response.json());
+          resolve();
+        });
+      },
+    },
+    {
+      action: 'extend',
+      label: '打印',
+      extendAction: () => {
+        console.log();
+        table.refreshTable();
+      },
+    },
+  ];
 
   return (
     <>

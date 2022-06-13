@@ -55,7 +55,7 @@ export class Store {
   };
 
   closeAction = () => {
-    this.action = null;
+    this.record = null;
     this.action = null;
     this.forceRootUpdate();
   };

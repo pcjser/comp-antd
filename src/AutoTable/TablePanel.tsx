@@ -74,8 +74,18 @@ const TablePanel: React.FC<TablePanelProps> = ({
                   <Button type="link"> {labelFilter(action)}</Button>
                 </Popconfirm>
               );
-            default:
-              return null;
+            case 'extend':
+              return (
+                <Button
+                  type="link"
+                  key={`extend-${action.label}`}
+                  onClick={() => {
+                    action.extendAction && action.extendAction(record, condition);
+                  }}
+                >
+                  {action.label ?? '请补充action.label'}
+                </Button>
+              );
           }
         })}
         {/* {actionExtends.map(({ label, action }) => (

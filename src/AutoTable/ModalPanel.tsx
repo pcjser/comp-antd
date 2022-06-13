@@ -13,9 +13,9 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
 
   useEffect(() => {
     console.log('ModalPanel====================================>useEffect');
-
-    form.setFieldsValue(record);
-  }, [record]);
+    if (action?.action === 'create') form.resetFields();
+    else form.setFieldsValue(record);
+  }, [record, action]);
 
   const titleFilter = (action: Action | null) => {
     if (!action) return '';
@@ -35,7 +35,7 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
     return (
       <Space>
         {action.action === 'create' && (
-          <Button type="primary" onClick={console.log}>
+          <Button type="primary" onClick={handleCreate}>
             新增
           </Button>
         )}
@@ -61,6 +61,24 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
           message.success('更新成功');
           refreshTable();
           closeAction();
+        } else {
+          message.error('请添加action.dataSource属性');
+        }
+      })
+      .catch(() => message.warning('请先完善表单内容'));
+  };
+
+  const handleCreate = () => {
+    form
+      .validateFields()
+      .then(async (values) => {
+        if (action && action.dataSource) {
+          await action.dataSource(values);
+          message.success('新增成功');
+          refreshTable();
+          closeAction();
+        } else {
+          message.error('请添加action.dataSource属性');
         }
       })
       .catch(() => message.warning('请先完善表单内容'));
@@ -74,7 +92,9 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
       maskClosable={false}
       closable={false}
     >
-      <Form form={form}>{formItems(form, action as Action, record as Record<string, any>)}</Form>
+      <Form form={form} disabled={action?.action === 'retrieve'}>
+        {formItems(form, action as Action, record as Record<string, any>)}
+      </Form>
     </Modal>
   );
 };

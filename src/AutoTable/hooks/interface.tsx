@@ -9,22 +9,14 @@ interface Condition {
   component: React.ReactNode;
 }
 
-// type OperationType = 'create' | 'delete';
-
-// interface Operation {
-//   operation: OperationType;
-//   label: string;
-//   title: string;
-//   dataSource?: () => Promise<Record<string, any>>;
-// }
-
 export type ActionType = 'create' | 'retrieve' | 'update' | 'delete' | 'extend';
 
 export interface Action {
   action: ActionType;
-  label: string;
+  label?: React.ReactNode;
   title?: string;
   dataSource?: (key: string) => Promise<Record<string, any>>;
+  extendAction?: (record: Record<string, any> | null, condition: Record<string, any>) => void;
 }
 
 export interface Pagination {
