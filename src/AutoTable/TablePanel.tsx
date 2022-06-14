@@ -10,13 +10,14 @@ const TablePanel: React.FC<TablePanelProps> = ({
   serial,
   actions,
   unique,
+  rowSelection,
   ...rest
 }) => {
   const autoTableContext = React.useContext(AutoTableContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Record<string, any>[]>([]);
-  const { setPagination, openAction, setUnique, setCondition, condition } =
+  const { setPagination, openAction, setUnique, setCondition, condition, setSelectedRows } =
     autoTableContext.getInternalHooks();
 
   const actionAassemble: React.FC<Record<string, any>> = (record) => {
@@ -88,29 +89,10 @@ const TablePanel: React.FC<TablePanelProps> = ({
               );
           }
         })}
-        {/* {actionExtends.map(({ label, action }) => (
-          <Button
-            type="link"
-            key={label}
-            onClick={() =>
-              action(record, (current) =>
-                setSearch({
-                  ...search,
-                  current: current ?? search.current,
-                }),
-              )
-            }
-          >
-            {label}
-          </Button>
-        ))} */}
       </Space>
     );
   };
 
-  // let timer = null;
-
-  // console.log('TablePanel==============================>render');
   useEffect(() => {
     console.log('TablePanel==============================>useEffect');
 
@@ -125,8 +107,6 @@ const TablePanel: React.FC<TablePanelProps> = ({
     })();
   }, [unique, condition]);
 
-  // console.log('condition=======>', condition);
-
   if (serial)
     columns = [
       {
@@ -136,7 +116,6 @@ const TablePanel: React.FC<TablePanelProps> = ({
       },
       ...columns,
     ];
-  //   console.log(actions, '=======================');
 
   if (actions && actions.length > 0)
     columns = [
@@ -148,14 +127,18 @@ const TablePanel: React.FC<TablePanelProps> = ({
       },
     ];
 
+  let props: Record<string, any> = {};
+
+  if (rowSelection) {
+    props.rowSelection = {
+      ...rowSelection,
+      // selectedRowKeys,
+      onChange: setSelectedRows,
+    };
+  }
+
   return (
     <Table
-      // rowSelection={
-      //   selection && {
-      //     selectedRowKeys,
-      //     onChange: handleSelectChange,
-      //   }
-      // }
       rowKey={unique}
       columns={columns}
       dataSource={data}
@@ -163,6 +146,7 @@ const TablePanel: React.FC<TablePanelProps> = ({
       pagination={false}
       // size={size}
       // scroll={scroll}
+      {...props}
       {...rest}
     />
   );

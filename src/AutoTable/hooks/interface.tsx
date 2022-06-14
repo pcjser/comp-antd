@@ -9,14 +9,17 @@ interface Condition {
   component: React.ReactNode;
 }
 
-export type ActionType = 'create' | 'retrieve' | 'update' | 'delete' | 'extend';
+export type ActionType = 'create' | 'retrieve' | 'update' | 'delete' | 'export' | 'extend';
 
 export interface Action {
   action: ActionType;
   label?: React.ReactNode;
   title?: string;
-  dataSource?: (key: string) => Promise<Record<string, any>>;
+  dataSource?: (
+    value: string | Record<string, any>[] | Record<string, any>,
+  ) => Promise<Record<string, any>>;
   extendAction?: (record: Record<string, any> | null, condition: Record<string, any>) => void;
+  extendOperation?: (selectedRows: Record<string, any>[], condition: Record<string, any>) => void;
 }
 
 export interface Pagination {
@@ -31,6 +34,7 @@ export interface InternalHooks {
   pagination: Pagination;
   record: Record<string, any> | null;
   action: Action | null;
+  selectedRows: Record<string, any>[];
   setUnique: (key: string) => void;
   setCondition: (condition: Record<string, any>) => void;
   setPagination: (pagination: Pagination) => void;

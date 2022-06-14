@@ -26,12 +26,14 @@ export class Store {
     pagination: this.pagination,
     record: this.record,
     action: this.action,
+    selectedRows: this.selectedRows,
     setUnique: this.setUnique,
     setCondition: this.setCondition,
     setPagination: this.setPagination,
     openAction: this.openAction,
     closeAction: this.closeAction,
     refreshTable: this.refreshTable,
+    setSelectedRows: this.setSelectedRows,
   });
 
   // ConditionPanel
@@ -45,6 +47,14 @@ export class Store {
   unique: string = '';
   record: Record<string, any> | null = null;
   action: Action | null = null;
+  selectedRows: Record<string, any>[] = [];
+
+  setSelectedRows = (selectedRowKeys, selectedRows) => {
+    this.selectedRows = selectedRows;
+    console.log(this.selectedRows);
+    this.forceRootUpdate();
+  };
+
   setUnique = (unique: string) => (this.unique = unique);
 
   openAction = (action: Action | null, record: Record<string, any> | null) => {

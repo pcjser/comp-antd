@@ -42,6 +42,18 @@ const operations = [
       });
     },
   },
+  {
+    action: 'delete',
+    dataSource: (selectedRowKeys) => {
+      return new Promise(async (resolve) => {
+        await fetch('http://localhost:4567/api/v1/demo/deleteBatch', {
+          method: 'post',
+          body: JSON.stringify(selectedRowKeys),
+        }).then((response) => response.json());
+        resolve();
+      });
+    },
+  },
 ];
 
 const formItems = (form, action, record) => {
@@ -144,78 +156,12 @@ export default () => {
           actions={actions}
           columns={columns}
           dataSource={getData}
+          rowSelection
         />
-        <AutoTable.ModalPanel formItems={formItems} />
+        <AutoTable.DrawerPanel formItems={formItems} />
         <AutoTable.PaginationPanel />
       </AutoTable>
       <div onClick={() => table.refreshTable()}>刷新</div>
     </>
   );
 };
-
-// // export default () => {
-// //   // const conditions = [
-// //   //   {
-// //   //     name: 'date',
-// //   //     label: '案源生效时间',
-// //   //     component: <Input />,
-// //   //   },
-// //   //   {
-// //   //     name: 'factor',
-// //   //     label: '相关要素',
-// //   //     component: (
-// //   //       <MapSelect
-// //   //         dataSource={[
-// //   //           {
-// //   //             label: 'Jack-Label',
-// //   //             value: 'Jack',
-// //   //           },
-// //   //           {
-// //   //             label: 'Lucy-Label',
-// //   //             value: 'Lucy',
-// //   //           },
-// //   //           {
-// //   //             label: 'Rose-Label',
-// //   //             value: 'Rose',
-// //   //           },
-// //   //           {
-// //   //             label: 'Windy-Label',
-// //   //             value: 'Windy',
-// //   //           },
-// //   //         ]}
-// //   //       />
-// //   //     ),
-// //   //   },
-// //   // ];
-
-// //   // const columns = [
-// //   //   {
-// //   //     title: '姓名',
-// //   //     dataIndex: 'name',
-// //   //     key: 'name',
-// //   //   },
-// //   //   {
-// //   //     title: '年龄',
-// //   //     dataIndex: 'age',
-// //   //     key: 'age',
-// //   //   },
-// //   //   {
-// //   //     title: '住址',
-// //   //     dataIndex: 'address',
-// //   //     key: 'address',
-// //   //   },
-// //   // ];
-
-// //   // const [table] = AutoTable.useAutoTable();
-// //   // console.log(table);
-// //   // useEffect(() => {
-// //   //   table.initialTable();
-// //   // }, []);
-
-// //   return (
-// //     <AutoTable />
-// //       // {/* <AutoTable.SearchPanel conditions={conditions} />
-// //       // <AutoTable.TablePanel columns={columns} dataSource={getData()} rowKey="id" /> */}
-// //     // </AutoTable>
-// //   );
-// // };

@@ -9,6 +9,7 @@ import {
 } from './hooks/interface';
 
 import ConditionPanel from './ConditionPanel';
+import DrawerPanel from './DrawerPanel';
 import ModalPanel from './ModalPanel';
 import OperationPanel from './OperationPanel';
 import PaginationPanel from './PaginationPanel';
@@ -40,6 +41,8 @@ RefAutoTable.TablePanel = TablePanel;
 RefAutoTable.ConditionPanel = ConditionPanel;
 RefAutoTable.OperationPanel = OperationPanel;
 RefAutoTable.ModalPanel = ModalPanel;
+RefAutoTable.DrawerPanel = DrawerPanel;
+
 RefAutoTable.PaginationPanel = PaginationPanel;
 
 RefAutoTable.useAutoTable = useAutoTable;

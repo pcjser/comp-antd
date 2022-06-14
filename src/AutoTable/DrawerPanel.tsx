@@ -1,4 +1,4 @@
-import { Button, Form, message, Modal, Space } from 'antd';
+import { Button, Drawer, Form, message, Space } from 'antd';
 import React, { useEffect } from 'react';
 
 import AutoTableContext from './hooks/context';
@@ -34,7 +34,7 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
   const footerFilter = (action: Action | null) => {
     if (!action) return null;
     return (
-      <Space>
+      <Space style={{ display: 'flex', justifyContent: 'end' }}>
         {action.action === 'create' && (
           <Button type="primary" onClick={handleCreate}>
             新增
@@ -86,7 +86,7 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
   };
 
   return (
-    <Modal
+    <Drawer
       visible={Boolean(action)}
       title={titleFilter(action)}
       footer={footerFilter(action)}
@@ -96,7 +96,7 @@ const ModalPanel: React.FC<ModalPanelProps> = ({ formItems }) => {
       <Form form={form} disabled={action?.action === 'retrieve'}>
         {formItems(form, action as Action, record as Record<string, any>)}
       </Form>
-    </Modal>
+    </Drawer>
   );
 };
 
